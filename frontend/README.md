@@ -1,39 +1,28 @@
-# frontend
+# h25s_03 frontend
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+## 環境構築
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+### 前提
+bun ([公式サイト](https://bun.sh/))
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
+### 依存関係のインストール
 ```sh
 bun install
 ```
 
-### Compile and Hot-Reload for Development
-
+### スクリプト
 ```sh
-bun dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
+# 開発サーバーを起動
+bun run dev
+# ビルド
 bun run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-bun lint
+# ローカルでプレビュー
+bun run preview
+# 型チェック
+bun run type-check
+# 構文チェックと自動修正
+bun run lint
+# コードの整形
+bun run format
 ```
