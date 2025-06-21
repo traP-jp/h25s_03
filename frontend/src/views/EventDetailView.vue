@@ -42,10 +42,10 @@ const getEvent = async () => {
       <div>
         <h2>参加者リスト</h2>
         <div class="d-flex flex-wrap">
-          <v-avatar
+          <user-avatar
             v-for="attendee in event.attendees"
             :key="attendee"
-            :image="`https://q.trap.jp/api/v3/public/icon/${attendee}`"
+            :id="attendee"
             :size="avatarSize"
           />
         </div>
