@@ -6,6 +6,7 @@ import (
 	"github.com/eraxyso/go-template/api"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"gorm.io/gorm"
 )
 
@@ -74,4 +75,8 @@ func (lr *LotteryRepositoryImpl) DeleteLottery(ctx echo.Context, lotteryID uuid.
 		return gorm.ErrRecordNotFound
 	}
 	return nil
+}
+
+func (lr LotteryRepositoryImpl) InsertLottery(ctx echo.Context, eventID openapi_types.UUID) (uuid.UUID, error) {
+	return uuid.Nil, nil
 }

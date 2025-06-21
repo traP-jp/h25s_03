@@ -32,3 +32,12 @@ func (ls *LotteryServiceImpl) DeleteLottery(ctx echo.Context, eventID uuid.UUID,
 	}
 	return nil
 }
+
+func (ls LotteryServiceImpl) CreateLottery(ctx echo.Context, eventID uuid.UUID, requestBody api.PostLotteriesJSONRequestBody) (uuid.UUID, error) {
+	u, err := ls.lotteryRepository.InsertLottery(ctx, eventID, requestBody)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return u, nil
+
+}

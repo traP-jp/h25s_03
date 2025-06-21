@@ -9,4 +9,5 @@ import (
 type LotteryService interface {
 	GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error)
 	DeleteLottery(ctx echo.Context, eventID uuid.UUID, lotteryID uuid.UUID) error
+	CreateLottery(ctx echo.Context, eventID uuid.UUID, requestBody api.PostLotteriesJSONRequestBody) error
 }
