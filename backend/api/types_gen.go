@@ -18,7 +18,7 @@ type Event struct {
 	Description *string            `json:"description,omitempty"`
 	EventId     openapi_types.UUID `json:"event_id"`
 	IsDelete    bool               `json:"is_delete"`
-	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
 	UpdatedAt   time.Time          `json:"updated_at"`
@@ -30,7 +30,8 @@ type EventBase struct {
 	Attendees   []string           `json:"attendees"`
 	Date        openapi_types.Date `json:"date"`
 	Description *string            `json:"description,omitempty"`
-	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	EventId     openapi_types.UUID `json:"event_id"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
 }
@@ -39,7 +40,8 @@ type EventBase struct {
 type EventSummary struct {
 	Date        openapi_types.Date `json:"date"`
 	Description *string            `json:"description,omitempty"`
-	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	EventId     openapi_types.UUID `json:"event_id"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
 }
@@ -52,7 +54,7 @@ type EventUpdate struct {
 	Description *string            `json:"description,omitempty"`
 	EventId     openapi_types.UUID `json:"event_id"`
 	IsDelete    bool               `json:"is_delete"`
-	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
 }

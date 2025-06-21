@@ -232,6 +232,9 @@ components:
     EventSummary:
       type: object
       properties:
+        event_id:
+          type: string
+          format: uuid
         title:
           type: string
         description:
@@ -244,9 +247,11 @@ components:
         is_me_admin:
           type: boolean
       required:
+        - event_id
         - title
         - date
         - is_open
+        - is_me_admin
     EventBase:
       allOf:
         - $ref: '#/components/schemas/EventSummary'
