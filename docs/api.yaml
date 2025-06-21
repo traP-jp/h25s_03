@@ -24,6 +24,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
         '500':
           description: Internal Server Error
     get:
@@ -42,9 +46,13 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventSummary'
+                allOf:
+                  - $ref: '#/components/schemas/EventSummary'
+                  - type: object
+                    properties:
+                      event_id:
+                        type: string
+                        format: uuid
         '500':
           description: Internal Server Error
   /events/{eventID}:
@@ -143,7 +151,7 @@ paths:
     post:
       tags:
         - Lottery
-      operationId: postLottery
+      operationId: postLotteries
       parameters:
         - in: path
           name: eventID
@@ -151,9 +159,28 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+              required:
+                - title
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lottery_id:
+                    type: string
+                    format: uuid
         '500':
           description: Internal Server Error
     get:
@@ -179,6 +206,36 @@ paths:
         '500':
           description: Internal Server Error
   /events/{eventID}/lotteries/{lotteryID}:
+    post:
+      tags:
+        - Lottery
+      operationId: postLottery
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: lotteryID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  winner:
+                    type: string
+                    description: traQ ID
+        '500':
+          description: Internal Server Error
     get:
       tags:
         - Lottery
@@ -232,9 +289,6 @@ components:
     EventSummary:
       type: object
       properties:
-        event_id:
-          type: string
-          format: uuid
         title:
           type: string
         description:
@@ -247,7 +301,6 @@ components:
         is_me_admin:
           type: boolean
       required:
-        - event_id
         - title
         - date
         - is_open
@@ -296,13 +349,9 @@ components:
         - $ref: '#/components/schemas/EventBase'
         - type: object
           properties:
-            event_id:
-              type: string
-              format: uuid
             is_delete:
               type: boolean
           required:
-            - event_id
             - is_delete
     Lottery:
       type: object

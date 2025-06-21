@@ -14,11 +14,11 @@ func NewAttendanceServiceImpl(exampleRepository repository.AttendanceRepository)
 	return &AttendanceServiceImpl{}
 }
 
-func (es AttendanceServiceImpl) CancelAttendance(ctx echo.Context, eventID openapi_types.UUID) error{
+func (es AttendanceServiceImpl) CancelAttendance(ctx echo.Context, eventID openapi_types.UUID) error {
 	if err := es.attendanceRepository.DeleteAttendance(ctx, eventID); err != nil {
 		return err
 	}
-	return nil	
+	return nil
 }
 
 func (es AttendanceServiceImpl) CreateEvent(ctx echo.Context, eventID openapi_types.UUID) error {
