@@ -7,4 +7,7 @@ import (
 
 type AttendanceService interface {
 	CancelAttendance(ctx echo.Context, eventID openapi_types.UUID) error
+	CreateAttendance(ctx echo.Context, eventID openapi_types.UUID) error
 }
+
+
