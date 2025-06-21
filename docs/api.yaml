@@ -106,6 +106,127 @@ paths:
           description: OK
         '500':
           description: Internal Server Error
+  /events/{eventID}/attendance:
+    post:
+      tags:
+        - Attendance
+      operationId: postAttendance
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - Attendance
+      operationId: deleteAttendance
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+  /events/{eventID}/lotteries:
+    post:
+      tags:
+        - Lottery
+      operationId: postLottery
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+    get:
+      tags:
+        - Lottery
+      operationId: getLotteries
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lottery'
+        '500':
+          description: Internal Server Error
+  /events/{eventID}/lotteries/{lotteryID}:
+    get:
+      tags:
+        - Lottery
+      operationId: getLottery
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: lotteryID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lottery'
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - Lottery
+      operationId: deleteLottery
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: lotteryID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
 components:
   schemas:
     EventSummary:
@@ -178,3 +299,37 @@ components:
           required:
             - event_id
             - is_delete
+    Lottery:
+      allOf:
+        - $ref: '#/components/schemas/LotteryBase'
+        - type: object
+          properties:
+            lottery_id:
+              type: string
+              format: uuid
+            event_id:
+              type: string
+              format: uuid
+            title:
+              type: string
+            is_delete:
+              type: boolean
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            winners:
+              type: array
+              items:
+                type: string
+                description: traQ ID
+          required:
+            - lottery_id
+            - event_id
+            - title
+            - is_delete
+            - updated_at
+            - created_at
+            - winners
