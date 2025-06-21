@@ -93,7 +93,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventUpdate'
+              $ref: '#/components/schemas/EventBase'
       responses:
         '200':
           description: OK
@@ -330,38 +330,37 @@ components:
         - is_me_attendee
         - admins
     EventBase:
-      allOf:
-        - $ref: '#/components/schemas/EventSummary'
-        - type: object
-          properties:
-            title:
-              type: string
-            description:
-              type: string
-            date:
-              type: string
-              format: date
-            is_open:
-              type: boolean
-            is_me_attendee:
-              type: boolean
-            admins:
-              type: array
-              items:
-                type: string
-                description: traQ ID
-            attendees:
-              type: array
-              items:
-                type: string
-                description: traQ ID
-          required:
-            - title
-            - date
-            - is_open
-            - is_me_attendee
-            - admins
-            - attendees
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        is_open:
+          type: boolean
+        is_me_attendee:
+          type: boolean
+        admins:
+          type: array
+          items:
+            type: string
+            description: traQ ID
+        attendees:
+          type: array
+          items:
+            type: string
+            description: traQ ID
+      required:
+        - title
+        - description
+        - date
+        - is_open
+        - is_me_attendee
+        - admins
+        - attendees
     Event:
       allOf:
         - $ref: '#/components/schemas/EventBase'
@@ -383,15 +382,6 @@ components:
             - is_deleted
             - updated_at
             - created_at
-    EventUpdate:
-      allOf:
-        - $ref: '#/components/schemas/EventBase'
-        - type: object
-          properties:
-            is_deleted:
-              type: boolean
-          required:
-            - is_deleted
     Lottery:
       type: object
       properties:
