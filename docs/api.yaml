@@ -24,6 +24,14 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  event_id:
+                    type: string
+                    format: uuid
         '500':
           description: Internal Server Error
     get:
@@ -32,7 +40,8 @@ paths:
       operationId: getEvents
       parameters:
         - in: query
-          name: is_delete
+          name: ifDeleted
+          required: true
           schema:
             type: boolean
           description: If include the deleted events
@@ -42,9 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventSummary'
+                $ref: '#/components/schemas/EventSummary'
         '500':
           description: Internal Server Error
   /events/{eventID}:
@@ -143,7 +150,7 @@ paths:
     post:
       tags:
         - Lottery
-      operationId: postLottery
+      operationId: postLotteries
       parameters:
         - in: path
           name: eventID
@@ -151,9 +158,28 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+              required:
+                - title
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lottery_id:
+                    type: string
+                    format: uuid
         '500':
           description: Internal Server Error
     get:
@@ -167,6 +193,12 @@ paths:
           schema:
             type: string
             format: uuid
+        - in: query
+          name: ifDeleted
+          required: true
+          schema:
+            type: boolean
+          description: If include the deleted lotteries
       responses:
         '200':
           description: OK
@@ -179,6 +211,42 @@ paths:
         '500':
           description: Internal Server Error
   /events/{eventID}/lotteries/{lotteryID}:
+    post:
+      tags:
+        - Lottery
+      operationId: postLottery
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: lotteryID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: ifDuplicated
+          required: true
+          schema:
+            type: boolean
+          description: If allow duplicated winning in the same event
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  winner:
+                    type: string
+                    description: traQ ID
+        '500':
+          description: Internal Server Error
     get:
       tags:
         - Lottery
@@ -244,19 +312,36 @@ components:
           format: date
         is_open:
           type: boolean
-        is_me_admin:
+        is_me_attendee:
           type: boolean
+        admins:
+          type: array
+          items:
+            type: string
+            description: traQ ID
       required:
         - event_id
         - title
         - date
         - is_open
-        - is_me_admin
+        - is_me_attendee
+        - admins
     EventBase:
       allOf:
         - $ref: '#/components/schemas/EventSummary'
         - type: object
           properties:
+            title:
+              type: string
+            description:
+              type: string
+            date:
+              type: string
+              format: date
+            is_open:
+              type: boolean
+            is_me_attendee:
+              type: boolean
             admins:
               type: array
               items:
@@ -268,6 +353,10 @@ components:
                 type: string
                 description: traQ ID
           required:
+            - title
+            - date
+            - is_open
+            - is_me_attendee
             - admins
             - attendees
     Event:
@@ -278,7 +367,7 @@ components:
             event_id:
               type: string
               format: uuid
-            is_delete:
+            is_deleted:
               type: boolean
             updated_at:
               type: string
@@ -288,7 +377,7 @@ components:
               format: date-time
           required:
             - event_id
-            - is_delete
+            - is_deleted
             - updated_at
             - created_at
     EventUpdate:
@@ -296,14 +385,10 @@ components:
         - $ref: '#/components/schemas/EventBase'
         - type: object
           properties:
-            event_id:
-              type: string
-              format: uuid
-            is_delete:
+            is_deleted:
               type: boolean
           required:
-            - event_id
-            - is_delete
+            - is_deleted
     Lottery:
       type: object
       properties:
@@ -315,7 +400,7 @@ components:
           format: uuid
         title:
           type: string
-        is_delete:
+        is_deleted:
           type: boolean
         created_at:
           type: string
@@ -332,7 +417,7 @@ components:
         - lottery_id
         - event_id
         - title
-        - is_delete
+        - is_deleted
         - updated_at
         - created_at
         - winners
