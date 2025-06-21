@@ -36,3 +36,14 @@ func (h *Handler) DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lo
 	}
 	return ctx.NoContent(http.StatusNoContent)
 }
+
+func (h *Handler) PostLotteries(ctx echo.Context, eventID openapi_types.UUID) error {
+	requestBody := api.PostLotteriesJSONRequestBody{}
+	if err := ctx.Bind(&requestBody); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	if err := h.LotteryService.CreateLottery(ctx, eventID, requestBody); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	return ctx.NoContent(http.StatusOK)
+}
