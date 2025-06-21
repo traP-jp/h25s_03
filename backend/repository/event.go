@@ -2,8 +2,10 @@ package repository
 
 import (
 	"github.com/eraxyso/go-template/api"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+
 )
 
 type EventRepository interface {
