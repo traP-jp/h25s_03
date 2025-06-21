@@ -10,7 +10,9 @@ const eventId = route.params.eventId as string
 
 const event = ref<components['schemas']['Event'] | undefined>()
 
-const avatarSize = computed(() => event.value && event.value.attendees.length >= 50 ? 'x-small' : 'small')
+const avatarSize = computed(() =>
+  event.value && event.value.attendees.length >= 50 ? 'x-small' : 'small',
+)
 
 onMounted(async () => {
   await getEvent()
@@ -32,12 +34,7 @@ const getEvent = async () => {
         <h1>{{ event.title }}</h1>
         <div>
           <span>by</span>
-          <user-avatar
-            v-for="admin in event.admins"
-            :key="admin"
-            :id="admin"
-            size="x-small"
-          />
+          <user-avatar v-for="admin in event.admins" :key="admin" :id="admin" size="x-small" />
         </div>
       </div>
       <span>{{ event.date }}</span>
