@@ -14,3 +14,10 @@ func (h *Handler) DeleteAttendance(ctx echo.Context, eventID openapi_types.UUID)
 	}
 	return ctx.NoContent(http.StatusOK)
 }
+
+func (h *Handler) PostAttendance(ctx echo.Context, eventID openapi_types.UUID) error{
+	if err := h.AttendanceService.CreateAttendance(ctx, eventID); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	return ctx.NoContent(http.StatusOK)
+}
