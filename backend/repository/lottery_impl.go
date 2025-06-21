@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/eraxyso/go-template/api"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 	"gorm.io/gorm"
 )
 
@@ -16,13 +13,15 @@ type LotteryRepositoryImpl struct {
 	db *gorm.DB
 }
 
+var _ LotteryRepository = &LotteryRepositoryImpl{}
+
 func NewLotteryRepositoryImpl(db *gorm.DB) *LotteryRepositoryImpl {
 	return &LotteryRepositoryImpl{
 		db: db,
 	}
 }
 
-type Lottery struct {
+type lotteryModel struct {
 	LotteryID string    `gorm:"column:lottery_id;type:char(36);primaryKey;not null" json:"lottery_id"`
 	EventID   string    `gorm:"column:event_id;type:char(36);not null" json:"event_id"`
 	Title     string    `gorm:"column:title;type:varchar(100);not null" json:"title"`
@@ -31,71 +30,81 @@ type Lottery struct {
 	UpdatedAt time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP;autoUpdateTime" json:"updated_at"`
 
 	// Associations
-	Event   Event    `gorm:"foreignKey:EventID;references:EventID" json:"event,omitempty"`
-	Winners []Winner `gorm:"foreignKey:LotteryID;references:LotteryID" json:"winners,omitempty"`
+	Event   eventModel    `gorm:"foreignKey:EventID;references:EventID" json:"event,omitempty"`
+	Winners []winnerModel `gorm:"foreignKey:LotteryID;references:LotteryID" json:"winners,omitempty"`
 }
 
-func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid.UUID, lotteryBody api.PostEventJSONRequestBody) (uuid.UUID, error) {
+type LotteryOnCreate struct {
+	Title string `json:"title"`
+}
 
-	newLottery := &Lottery{
-		LotteryID: uuid.NewString(),
-
-		EventID: eventID.String(),
-		Title:   lotteryBody.Title,
+func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid.UUID, lottery LotteryOnCreate) (uuid.UUID, error) {
+	lotteryID := uuid.New()
+	newLottery := &lotteryModel{
+		LotteryID: lotteryID.String(),
+		EventID:   eventID.String(),
+		Title:     lottery.Title,
+		IsDeleted: false,
 	}
 
 	if err := ls.db.WithContext(ctx).Create(newLottery).Error; err != nil {
-		return uuid.Nil, fmt.Errorf("failed to create lottery in db: %w", err)
+		return uuid.Nil, fmt.Errorf("insert lottery (repository): %w", err)
 	}
 
-	createdID, err := uuid.Parse(newLottery.LotteryID)
-	if err != nil {
-		return uuid.Nil, fmt.Errorf("failed to parse created lottery id: %w", err)
-	}
-
-	return createdID, nil
+	return lotteryID, nil
 }
 
-func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error) {
-	var lotteries []Lottery
-	query := lr.db.WithContext(ctx.Request().Context()).Preload("Winners").Where("event_id = ?", eventID)
+type LotteryWithWinners struct {
+	LotteryID uuid.UUID
+	EventID   uuid.UUID
+	Title     string
+	IsDeleted bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Winners   []string
+}
+
+func (lr *LotteryRepositoryImpl) GetLotteries(ctx context.Context, eventID uuid.UUID, ifDeleted bool) ([]LotteryWithWinners, error) {
+	var lotteries []lotteryModel
+	query := lr.db.WithContext(ctx).Preload("Winners").Where("event_id = ?", eventID)
 	if !ifDeleted {
 		query = query.Where("is_deleted = ?", false)
 	}
 	if err := query.Find(&lotteries).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get lotteries (repository): %w", err)
 	}
 
-	var apiLotteries []api.Lottery
+	var lotteriesResult []LotteryWithWinners
 	for _, lottery := range lotteries {
 		lotteryUUID, err := uuid.Parse(lottery.LotteryID)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("parse lottery id (repository): %w", err)
 		}
 		eventUUID, err := uuid.Parse(lottery.EventID)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("parse event id (repository): %w", err)
 		}
-		apiLotteries = append(apiLotteries, api.Lottery{
-			LotteryId: lotteryUUID,
-			EventId:   eventUUID,
+		l := LotteryWithWinners{
+			LotteryID: lotteryUUID,
+			EventID:   eventUUID,
 			Title:     lottery.Title,
 			IsDeleted: lottery.IsDeleted,
 			CreatedAt: lottery.CreatedAt,
 			UpdatedAt: lottery.UpdatedAt,
-		})
+		}
+		l.Winners = make([]string, len(lottery.Winners))
+		for i, winner := range lottery.Winners {
+			l.Winners[i] = winner.TraqID
+		}
+		lotteriesResult = append(lotteriesResult, l)
 	}
 
-	return apiLotteries, nil
+	return lotteriesResult, nil
 }
 
-func (lr *LotteryRepositoryImpl) DeleteLottery(ctx echo.Context, lotteryID uuid.UUID) error {
-	if err := lr.db.WithContext(ctx.Request().Context()).Model(&Lottery{}).Where("lottery_id = ?", lotteryID).Update("is_deleted", true).Error; err != nil {
-		return err
+func (lr *LotteryRepositoryImpl) DeleteLottery(ctx context.Context, lotteryID uuid.UUID) error {
+	if err := lr.db.WithContext(ctx).Model(&lotteryModel{}).Where("lottery_id = ?", lotteryID).Update("is_deleted", true).Error; err != nil {
+		return fmt.Errorf("delete lottery (repository): %w", err)
 	}
 	return nil
-}
-
-func (lr LotteryRepositoryImpl) InsertLottery(ctx echo.Context, eventID openapi_types.UUID) (uuid.UUID, error) {
-	return uuid.Nil, nil
 }

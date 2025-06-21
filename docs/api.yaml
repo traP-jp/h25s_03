@@ -97,7 +97,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventBase'
+              $ref: '#/components/schemas/EventOnUpdate'
       responses:
         '200':
           description: OK
@@ -371,6 +371,35 @@ components:
         - date
         - is_open
         - is_me_attendee
+        - admins
+        - attendees
+    EventOnUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        is_open:
+          type: boolean
+        admins:
+          type: array
+          items:
+            type: string
+            description: traQ ID
+        attendees:
+          type: array
+          items:
+            type: string
+            description: traQ ID
+      required:
+        - title
+        - description
+        - date
+        - is_open
         - admins
         - attendees
     Event:
