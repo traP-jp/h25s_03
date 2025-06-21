@@ -8,6 +8,6 @@ import (
 
 type LotteryRepository interface {
 	InsertLottery(ctx echo.Context, eventID uuid.UUID, lottery api.PostLotteriesJSONRequestBody) (uuid.UUID, error)
-	RequestLotteries(ctx echo.Context, eventID uuid.UUID) ([]api.Lottery, error)
+	GetLotteries(ctx echo.Context, eventID uuid.UUID) ([]api.Lottery, error)
 	RemoveLottery(ctx echo.Context, eventID uuid.UUID, lotteryID uuid.UUID) error
 }

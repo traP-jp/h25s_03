@@ -3,6 +3,9 @@ package repository
 import (
 	"time"
 
+	"github.com/eraxyso/go-template/api"
+	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -27,4 +30,34 @@ type Lottery struct {
 	// Associations
 	Event   Event    `gorm:"foreignKey:EventID;references:EventID" json:"event,omitempty"`
 	Winners []Winner `gorm:"foreignKey:LotteryID;references:LotteryID" json:"winners,omitempty"`
+}
+
+func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID) ([]api.Lottery, error) {
+	var lotteries []Lottery
+	if err := lr.db.Preload("Winners").Where("event_id = ?", eventID).Find(&lotteries).Error; err != nil {
+		return nil, err
+	}
+
+	// Convert to API response format
+	var apiLotteries []api.Lottery
+	for _, lottery := range lotteries {
+		lotteryUUID, err := uuid.Parse(lottery.LotteryID)
+		if err != nil {
+			return nil, err
+		}
+		eventUUID, err := uuid.Parse(lottery.EventID)
+		if err != nil {
+			return nil, err
+		}
+		apiLotteries = append(apiLotteries, api.Lottery{
+			LotteryId: lotteryUUID,
+			EventId:   eventUUID,
+			Title:     lottery.Title,
+			IsDeleted: lottery.IsDeleted,
+			CreatedAt: lottery.CreatedAt,
+			UpdatedAt: lottery.UpdatedAt,
+		})
+	}
+
+	return apiLotteries, nil
 }
