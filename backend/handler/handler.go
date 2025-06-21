@@ -5,13 +5,17 @@ import (
 )
 
 type Handler struct {
-	EventService service.EventService
 	MiddlewareService service.MiddlewareService
+	EventService      service.EventService
+	AttendanceService service.AttendanceService
+	LotteryService    service.LotteryService
 }
 
-func NewHandler(eventService service.EventService, middlewareService service.MiddlewareService) *Handler {
+func NewHandler(middlewareService service.MiddlewareService, eventService service.EventService, attendanceService service.AttendanceService, lotteryService service.LotteryService) *Handler {
 	return &Handler{
-		EventService:    eventService,
 		MiddlewareService: middlewareService,
+		EventService:      eventService,
+		AttendanceService: attendanceService,
+		LotteryService:    lotteryService,
 	}
 }
