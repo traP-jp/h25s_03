@@ -57,8 +57,20 @@ type EventUpdate struct {
 	Title       string             `json:"title"`
 }
 
+// Lottery defines model for Lottery.
+type Lottery struct {
+	CreatedAt time.Time          `json:"created_at"`
+	EventId   openapi_types.UUID `json:"event_id"`
+	IsDelete  bool               `json:"is_delete"`
+	LotteryId openapi_types.UUID `json:"lottery_id"`
+	Title     string             `json:"title"`
+	UpdatedAt time.Time          `json:"updated_at"`
+	Winners   []string           `json:"winners"`
+}
+
 // GetEventsParams defines parameters for GetEvents.
 type GetEventsParams struct {
+	// IsDelete If include the deleted events
 	IsDelete *bool `form:"is_delete,omitempty" json:"is_delete,omitempty"`
 }
 

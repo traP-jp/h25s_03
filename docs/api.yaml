@@ -300,36 +300,34 @@ components:
             - event_id
             - is_delete
     Lottery:
-      allOf:
-        - $ref: '#/components/schemas/LotteryBase'
-        - type: object
-          properties:
-            lottery_id:
-              type: string
-              format: uuid
-            event_id:
-              type: string
-              format: uuid
-            title:
-              type: string
-            is_delete:
-              type: boolean
-            created_at:
-              type: string
-              format: date-time
-            updated_at:
-              type: string
-              format: date-time
-            winners:
-              type: array
-              items:
-                type: string
-                description: traQ ID
-          required:
-            - lottery_id
-            - event_id
-            - title
-            - is_delete
-            - updated_at
-            - created_at
-            - winners
+      type: object
+      properties:
+        lottery_id:
+          type: string
+          format: uuid
+        event_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        is_delete:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        winners:
+          type: array
+          items:
+            type: string
+            description: traQ ID
+      required:
+        - lottery_id
+        - event_id
+        - title
+        - is_delete
+        - updated_at
+        - created_at
+        - winners
