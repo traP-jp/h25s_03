@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/eraxyso/go-template/api"
 	"github.com/eraxyso/go-template/repository"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
@@ -40,4 +41,12 @@ func (es EventServiceImpl) EditEvent(ctx echo.Context, eventID openapi_types.UUI
 		return err
 	}
 	return nil
+}
+
+func (es EventServiceImpl) GetEvent(ctx echo.Context, eventID uuid.UUID) (repository.SelectEvent, error) {
+	event, err := es.eventRepository.SelectEvent(ctx, eventID)
+	if err != nil {
+		return repository.SelectEvent{}, err
+	}
+	return event, nil
 }
