@@ -22,7 +22,7 @@
 
 > Composite Primary Key: (`event_id`, `traq_id`)
 
-### attendees
+### Attendees
 
 |     Field     |     Type     |     Null     |     Key     |     Default     |     Extra     |     Description     |
 |---------------|--------------|--------------|-------------|-----------------|---------------|---------------------|
@@ -31,18 +31,18 @@
 
 > Composite Primary Key: (`event_id`, `traq_id`)
 
-### lotteries
+### Lotteries
 
 |     Field     |     Type     |     Null     |     Key     |     Default     |     Extra     |     Description     |
 |---------------|--------------|--------------|-------------|-----------------|---------------|---------------------|
-| lottery__id   | CHAR(36)     | NO           | PRIMARY     |                 | UUID          |                     |
+| lottery_id    | CHAR(36)     | NO           | PRIMARY     |                 | UUID          |                     |
 | event_id      | CHAR(36)     | NO           |             |                 | UUID          |                     |
 | title         | VARCHAR(100) | NO           |             |                 |               |                     |
 | is_deleted    | BOOLEAN      | NO           |             |                 |               |                     |
 | created_at    | TIMESTAMP    | NO           |             |CURRENT_TIMESTAMP| ON CREATE     |                     |
 | updated_at    | TIMESTAMP    | NO           |             |CURRENT_TIMESTAMP| ON UPDATE     |                     |
 
-### winners
+### Winners
 
 |     Field     |     Type     |     Null     |     Key     |     Default     |     Extra     |     Description     |
 |---------------|--------------|--------------|-------------|-----------------|---------------|---------------------|
