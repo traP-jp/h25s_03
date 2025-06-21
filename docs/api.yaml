@@ -51,13 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/EventSummary'
-                  - type: object
-                    properties:
-                      event_id:
-                        type: string
-                        format: uuid
+                $ref: '#/components/schemas/EventSummary'
         '500':
           description: Internal Server Error
   /events/{eventID}:
@@ -306,6 +300,9 @@ components:
     EventSummary:
       type: object
       properties:
+        event_id:
+          type: string
+          format: uuid
         title:
           type: string
         description:
@@ -323,6 +320,7 @@ components:
             type: string
             description: traQ ID
       required:
+        - event_id
         - title
         - date
         - is_open
@@ -333,12 +331,33 @@ components:
         - $ref: '#/components/schemas/EventSummary'
         - type: object
           properties:
+            title:
+              type: string
+            description:
+              type: string
+            date:
+              type: string
+              format: date
+            is_open:
+              type: boolean
+            is_me_attendee:
+              type: boolean
+            admins:
+              type: array
+              items:
+                type: string
+                description: traQ ID
             attendees:
               type: array
               items:
                 type: string
                 description: traQ ID
           required:
+            - title
+            - date
+            - is_open
+            - is_me_attendee
+            - admins
             - attendees
     Event:
       allOf:
