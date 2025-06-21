@@ -30,7 +30,6 @@ type EventBase struct {
 	Attendees   []string           `json:"attendees"`
 	Date        openapi_types.Date `json:"date"`
 	Description *string            `json:"description,omitempty"`
-	EventId     openapi_types.UUID `json:"event_id"`
 	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
@@ -40,7 +39,6 @@ type EventBase struct {
 type EventSummary struct {
 	Date        openapi_types.Date `json:"date"`
 	Description *string            `json:"description,omitempty"`
-	EventId     openapi_types.UUID `json:"event_id"`
 	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
@@ -52,7 +50,6 @@ type EventUpdate struct {
 	Attendees   []string           `json:"attendees"`
 	Date        openapi_types.Date `json:"date"`
 	Description *string            `json:"description,omitempty"`
-	EventId     openapi_types.UUID `json:"event_id"`
 	IsDelete    bool               `json:"is_delete"`
 	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
@@ -76,8 +73,16 @@ type GetEventsParams struct {
 	IsDelete *bool `form:"is_delete,omitempty" json:"is_delete,omitempty"`
 }
 
+// PostLotteriesJSONBody defines parameters for PostLotteries.
+type PostLotteriesJSONBody struct {
+	Title string `json:"title"`
+}
+
 // PostEventsJSONRequestBody defines body for PostEvents for application/json ContentType.
 type PostEventsJSONRequestBody = EventBase
 
 // PatchEventJSONRequestBody defines body for PatchEvent for application/json ContentType.
 type PatchEventJSONRequestBody = EventUpdate
+
+// PostLotteriesJSONRequestBody defines body for PostLotteries for application/json ContentType.
+type PostLotteriesJSONRequestBody PostLotteriesJSONBody
