@@ -50,4 +50,4 @@
 | traq_id       | VARCHAR(32)  | NO           | PRIMARY     |                 |               |                     |
 | event_id      | CHAR(36)     | NO           |             |                 | UUID          |                     |
 
-> Composite Primary Key: (`event_id`, `traq_id`)
+> Composite Primary Key: (`lottery_id`, `traq_id`)
