@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/eraxyso/go-template/api"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 	"gorm.io/gorm"
@@ -52,3 +53,22 @@ func (es EventRepositoryImpl) DeleteEvent(ctx echo.Context, eventID openapi_type
 func (es EventRepositoryImpl) UptateEvent(ctx echo.Context, eventID openapi_types.UUID) error {
 	return nil
 }
+
+type SelectEvent struct {
+	EventId     uuid.UUID `json:"event_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Date        time.Time `json:"date"`
+	Admins      []string  `json:"admins"`
+	IsOpen      bool      `json:"is_open"`
+	Attendees   []string  `json:"attendees"`
+}
+
+func (es EventRepositoryImpl) SelectEvent(ctx echo.Context, eventID uuid.UUID) (event SelectEvent, err error) {
+	return SelectEvent{}, nil
+}
+
+// SELECT events.eventid, events.title, events.description,
+// events.data, events.isOpen, admins.userid, attendees.userid
+// FROM events JOIN admins ON events.eventid == admins.eventid
+// JOIN attendees ON events.eventid == attendees.eventid
