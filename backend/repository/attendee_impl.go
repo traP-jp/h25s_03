@@ -48,3 +48,13 @@ func (ar *AttendeeRepositoryImpl) DeleteAttendees(ctx context.Context, eventID u
 	}
 	return nil
 }
+
+func (ar *AttendeeRepositoryImpl) UpdateAttendees(ctx context.Context, eventID uuid.UUID, userIDs []string) error {
+	if err := ar.DeleteAttendees(ctx, eventID, nil); err != nil {
+		return fmt.Errorf("delete attendees (repository): %w", err)
+	}
+	if err := ar.InsertAttendees(ctx, eventID, userIDs); err != nil {
+		return fmt.Errorf("insert attendees (repository): %w", err)
+	}
+	return nil
+}

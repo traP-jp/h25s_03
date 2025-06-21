@@ -48,3 +48,13 @@ func (ar *AdminRepositoryImpl) DeleteAdmins(ctx context.Context, eventID uuid.UU
 	}
 	return nil
 }
+
+func (ar *AdminRepositoryImpl) UpdateAdmins(ctx context.Context, eventID uuid.UUID, userIDs []string) error {
+	if err := ar.DeleteAdmins(ctx, eventID, nil); err != nil {
+		return fmt.Errorf("delete admins (repository): %w", err)
+	}
+	if err := ar.InsertAdmins(ctx, eventID, userIDs); err != nil {
+		return fmt.Errorf("insert admins (repository): %w", err)
+	}
+	return nil
+}

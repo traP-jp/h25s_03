@@ -73,9 +73,9 @@ type EventWithAdminsAndAttendees struct {
 	Attendees   []string
 }
 
-func (er *EventRepositoryImpl) GetEvents(ctx context.Context, includeDeleted bool) ([]EventWithAdminsAndAttendees, error) {
+func (er *EventRepositoryImpl) GetEvents(ctx context.Context, ifDeleted bool) ([]EventWithAdminsAndAttendees, error) {
 	query := er.db.WithContext(ctx).Preload("Admins").Preload("Attendees")
-	if !includeDeleted {
+	if !ifDeleted {
 		query = query.Where("is_deleted = ?", false)
 	}
 	var events []eventModel

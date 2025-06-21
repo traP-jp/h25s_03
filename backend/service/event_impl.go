@@ -67,8 +67,8 @@ type EventSummary struct {
 	Admins       []string
 }
 
-func (es *EventServiceImpl) GetEvents(ctx context.Context, includeDeleted bool, userID string) ([]EventSummary, error) {
-	eventWithAdminsAndAttendees, err := es.eventRepository.GetEvents(ctx, includeDeleted)
+func (es *EventServiceImpl) GetEvents(ctx context.Context, ifDeleted bool, userID string) ([]EventSummary, error) {
+	eventWithAdminsAndAttendees, err := es.eventRepository.GetEvents(ctx, ifDeleted)
 	if err != nil {
 		return nil, fmt.Errorf("get events (service): %w", err)
 	}
@@ -158,6 +158,12 @@ func (es *EventServiceImpl) EditEvent(ctx context.Context, eventID uuid.UUID, ev
 	}
 	if err := es.eventRepository.UpdateEvent(ctx, eventID, updateEvent); err != nil {
 		return fmt.Errorf("update event (service): %w", err)
+	}
+	if err := es.adminRepository.UpdateAdmins(ctx, eventID, event.Admins); err != nil {
+		return fmt.Errorf("update admins (service): %w", err)
+	}
+	if err := es.attendeeRepository.UpdateAttendees(ctx, eventID, event.Attendees); err != nil {
+		return fmt.Errorf("update attendees (service): %w", err)
 	}
 	return nil
 }

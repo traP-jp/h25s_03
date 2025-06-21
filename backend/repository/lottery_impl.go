@@ -35,8 +35,7 @@ type lotteryModel struct {
 }
 
 type LotteryOnCreate struct {
-	EventID string `json:"event_id"`
-	Title   string `json:"title"`
+	Title string `json:"title"`
 }
 
 func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid.UUID, lottery LotteryOnCreate) (uuid.UUID, error) {
@@ -62,7 +61,7 @@ type LotteryWithWinners struct {
 	IsDeleted bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Winners   []Winner
+	Winners   []string
 }
 
 func (lr *LotteryRepositoryImpl) GetLotteries(ctx context.Context, eventID uuid.UUID, ifDeleted bool) ([]LotteryWithWinners, error) {
@@ -93,13 +92,9 @@ func (lr *LotteryRepositoryImpl) GetLotteries(ctx context.Context, eventID uuid.
 			CreatedAt: lottery.CreatedAt,
 			UpdatedAt: lottery.UpdatedAt,
 		}
-		l.Winners = make([]Winner, len(lottery.Winners))
+		l.Winners = make([]string, len(lottery.Winners))
 		for i, winner := range lottery.Winners {
-			l.Winners[i] = Winner{
-				EventID:   eventUUID,
-				LotteryID: lotteryUUID,
-				TraqID:    winner.TraqID,
-			}
+			l.Winners[i] = winner.TraqID
 		}
 		lotteriesResult = append(lotteriesResult, l)
 	}

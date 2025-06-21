@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/eraxyso/go-template/api"
 	"github.com/eraxyso/go-template/service"
 )
 
@@ -10,6 +11,8 @@ type Handler struct {
 	AttendanceService service.AttendanceService
 	LotteryService    service.LotteryService
 }
+
+var _ api.ServerInterface = &Handler{}
 
 func NewHandler(middlewareService service.MiddlewareService, eventService service.EventService, attendanceService service.AttendanceService, lotteryService service.LotteryService) *Handler {
 	return &Handler{
