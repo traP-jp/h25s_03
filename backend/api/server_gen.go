@@ -63,11 +63,11 @@ func (w *ServerInterfaceWrapper) GetEvents(ctx echo.Context) error {
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetEventsParams
-	// ------------- Optional query parameter "is_deleted" -------------
+	// ------------- Optional query parameter "if_deleted" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "is_deleted", ctx.QueryParams(), &params.IsDeleted)
+	err = runtime.BindQueryParameter("form", true, false, "if_deleted", ctx.QueryParams(), &params.IfDeleted)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter is_deleted: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter if_deleted: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
@@ -177,11 +177,11 @@ func (w *ServerInterfaceWrapper) GetLotteries(ctx echo.Context) error {
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetLotteriesParams
-	// ------------- Optional query parameter "is_deleted" -------------
+	// ------------- Optional query parameter "if_deleted" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "is_deleted", ctx.QueryParams(), &params.IsDeleted)
+	err = runtime.BindQueryParameter("form", true, false, "if_deleted", ctx.QueryParams(), &params.IfDeleted)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter is_deleted: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter if_deleted: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments

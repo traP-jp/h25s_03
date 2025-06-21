@@ -36,7 +36,7 @@ paths:
       operationId: getEvents
       parameters:
         - in: query
-          name: is_deleted
+          name: if_deleted
           schema:
             type: boolean
           description: If include the deleted events
@@ -195,7 +195,7 @@ paths:
             type: string
             format: uuid
         - in: query
-          name: is_deleted
+          name: if_deleted
           schema:
             type: boolean
           description: If include the deleted lotteries
