@@ -11,4 +11,10 @@ app.use(router)
 app.use(pinia)
 app.use(vuetify)
 
+// MSW
+if (import.meta.env.DEV) {
+  const { worker } = await import('./api/mocks/browser')
+  await worker.start()
+}
+
 app.mount('#app')
