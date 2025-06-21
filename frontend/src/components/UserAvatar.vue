@@ -6,9 +6,7 @@ defineProps<{
 </script>
 
 <template>
-  <v-tooltip
-    location="top"
-  >
+  <v-tooltip location="top">
     <template v-slot:activator="{ props }">
       <v-avatar
         v-bind="props"
