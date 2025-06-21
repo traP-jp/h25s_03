@@ -9,8 +9,8 @@ import (
 )
 
 func (h *Handler) PostLottery(ctx echo.Context, eventID openapi_types.UUID) error {
-	requestBody := api.PostEventsJSONRequestBody{}
-	if err := ctx.Bind(&requestBody) ; err != nil {
+	requestBody := api.PostLotteryJSONBody{}
+	if err := ctx.Bind(&requestBody); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	createdLottery, err := h.LotteryService.CreateLottery(ctx, eventID, requestBody)

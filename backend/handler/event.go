@@ -9,8 +9,8 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
-func (h *Handler) PostEvents(ctx echo.Context) error {
-	requestBody := api.PostEventsJSONRequestBody{}
+func (h *Handler) PostEvent(ctx echo.Context) error {
+	requestBody := api.PostEventJSONRequestBody{}
 	if err := ctx.Bind(&requestBody); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}

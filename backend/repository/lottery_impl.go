@@ -34,7 +34,7 @@ type Lottery struct {
 	Winners []Winner `gorm:"foreignKey:LotteryID;references:LotteryID" json:"winners,omitempty"`
 }
 
-func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid.UUID, lotteryBody api.PostEventsJSONRequestBody) (uuid.UUID, error) {
+func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid.UUID, lotteryBody api.PostEventJSONRequestBody) (uuid.UUID, error) {
 
 	newLottery := &Lottery{
 		LotteryID: uuid.NewString(),

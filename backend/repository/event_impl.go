@@ -36,7 +36,7 @@ type Event struct {
 	Lotteries []Lottery  `gorm:"foreignKey:EventID;references:EventID" json:"lotteries,omitempty"`
 }
 
-func (er EventRepositoryImpl) InsertEvent(ctx echo.Context, newEvent api.PostEventsJSONRequestBody) (uuid.UUID, error) {
+func (er EventRepositoryImpl) InsertEvent(ctx echo.Context, newEvent api.PostEventJSONRequestBody) (uuid.UUID, error) {
 	eventID := uuid.New()
 	event := Event{
 		EventID:     eventID.String(),

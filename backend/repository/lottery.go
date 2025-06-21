@@ -7,7 +7,7 @@ import (
 )
 
 type LotteryRepository interface {
-	InsertLottery(ctx echo.Context, eventID uuid.UUID, lottery api.PostLotteriesJSONRequestBody) (uuid.UUID, error)
+	InsertLottery(ctx echo.Context, eventID uuid.UUID, lottery api.PostLotteryJSONRequestBody) (uuid.UUID, error)
 	GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error)
 	DeleteLottery(ctx echo.Context, lotteryID uuid.UUID) error
 }
