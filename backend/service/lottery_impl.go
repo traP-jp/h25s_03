@@ -22,8 +22,8 @@ func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository) *Lott
 }
 
 type Lottery struct {
-	LotteryId uuid.UUID `json:"lottery_id"`
-	EventId   uuid.UUID `json:"event_id"`
+	LotteryID uuid.UUID `json:"lottery_id"`
+	EventID   uuid.UUID `json:"event_id"`
 	Title     string    `json:"title"`
 	IsDeleted bool      `json:"is_deleted"`
 	CreatedAt time.Time `json:"created_at"`
@@ -41,7 +41,7 @@ func (ls *LotteryServiceImpl) CreateLottery(ctx context.Context, eventID uuid.UU
 	}
 	createdID, err := ls.lotteryRepository.InsertLottery(ctx, eventID, lotteryOnCreate)
 	if err != nil {
-		return uuid.UUID{}, fmt.Errorf("insert lottery (service): %w", err)
+		return uuid.Nil, fmt.Errorf("insert lottery (service): %w", err)
 	}
 	return createdID, nil
 }
@@ -54,8 +54,8 @@ func (ls *LotteryServiceImpl) GetLotteries(ctx context.Context, eventID uuid.UUI
 	lotteriesResult := make([]Lottery, len(lotteries))
 	for i, lottery := range lotteries {
 		lotteriesResult[i] = Lottery{
-			LotteryId: lottery.LotteryId,
-			EventId:   lottery.EventId,
+			LotteryID: lottery.LotteryID,
+			EventID:   lottery.EventID,
 			Title:     lottery.Title,
 			IsDeleted: lottery.IsDeleted,
 			CreatedAt: lottery.CreatedAt,

@@ -55,13 +55,13 @@ func (er *EventRepositoryImpl) InsertEvent(ctx context.Context, event EventOnCre
 		IsDeleted:   false,
 	}
 	if err := er.db.WithContext(ctx).Create(&newEvent).Error; err != nil {
-		return uuid.UUID{}, fmt.Errorf("insert event (repository): %w", err)
+		return uuid.Nil, fmt.Errorf("insert event (repository): %w", err)
 	}
 	return eventID, nil
 }
 
 type EventWithAdminsAndAttendees struct {
-	EventId     uuid.UUID
+	EventID     uuid.UUID
 	Title       string
 	Description string
 	Date        time.Time
@@ -99,7 +99,7 @@ func (er *EventRepositoryImpl) GetEvents(ctx context.Context, ifDeleted bool) ([
 			attendees = append(attendees, attendee.TraqID)
 		}
 		eventResult = append(eventResult, EventWithAdminsAndAttendees{
-			EventId:     eventID,
+			EventID:     eventID,
 			Title:       event.Title,
 			Description: event.Description,
 			Date:        event.Date,
@@ -128,7 +128,7 @@ func (er *EventRepositoryImpl) GetEvent(ctx context.Context, eventID uuid.UUID) 
 		admins = append(admins, admin.TraqID)
 	}
 	eventResult := EventWithAdminsAndAttendees{
-		EventId:     eventID,
+		EventID:     eventID,
 		Title:       event.Title,
 		Description: event.Description,
 		Date:        event.Date,

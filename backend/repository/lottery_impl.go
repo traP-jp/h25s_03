@@ -55,8 +55,8 @@ func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid
 }
 
 type LotteryWithWinners struct {
-	LotteryId uuid.UUID
-	EventId   uuid.UUID
+	LotteryID uuid.UUID
+	EventID   uuid.UUID
 	Title     string
 	IsDeleted bool
 	CreatedAt time.Time
@@ -85,8 +85,8 @@ func (lr *LotteryRepositoryImpl) GetLotteries(ctx context.Context, eventID uuid.
 			return nil, fmt.Errorf("parse event id (repository): %w", err)
 		}
 		l := LotteryWithWinners{
-			LotteryId: lotteryUUID,
-			EventId:   eventUUID,
+			LotteryID: lotteryUUID,
+			EventID:   eventUUID,
 			Title:     lottery.Title,
 			IsDeleted: lottery.IsDeleted,
 			CreatedAt: lottery.CreatedAt,

@@ -42,8 +42,8 @@ func (h *Handler) GetLotteries(ctx echo.Context, eventID openapi_types.UUID, par
 	response := make([]api.Lottery, len(lotteries))
 	for i, lottery := range lotteries {
 		response[i] = api.Lottery{
-			LotteryId: lottery.LotteryId,
-			EventId:   lottery.EventId,
+			LotteryId: lottery.LotteryID,
+			EventId:   lottery.EventID,
 			Title:     lottery.Title,
 			IsDeleted: lottery.IsDeleted,
 			CreatedAt: lottery.CreatedAt,

@@ -44,15 +44,15 @@ func (es *EventServiceImpl) CreateEvent(ctx context.Context, event EventOnCreate
 	}
 	eventID, err := es.eventRepository.InsertEvent(ctx, newEvent)
 	if err != nil {
-		return uuid.UUID{}, fmt.Errorf("insert event (service): %w", err)
+		return uuid.Nil, fmt.Errorf("insert event (service): %w", err)
 	}
 	err = es.adminRepository.InsertAdmins(ctx, eventID, event.Admins)
 	if err != nil {
-		return uuid.UUID{}, fmt.Errorf("insert admins (service): %w", err)
+		return uuid.Nil, fmt.Errorf("insert admins (service): %w", err)
 	}
 	err = es.attendeeRepository.InsertAttendees(ctx, eventID, event.Attendees)
 	if err != nil {
-		return uuid.UUID{}, fmt.Errorf("insert attendees (service): %w", err)
+		return uuid.Nil, fmt.Errorf("insert attendees (service): %w", err)
 	}
 	return eventID, nil
 }
@@ -84,7 +84,7 @@ func (es *EventServiceImpl) GetEvents(ctx context.Context, ifDeleted bool, userI
 			}
 		}
 		eventSummaries = append(eventSummaries, EventSummary{
-			EventID:      event.EventId,
+			EventID:      event.EventID,
 			Title:        event.Title,
 			Description:  event.Description,
 			Date:         event.Date,
@@ -97,7 +97,7 @@ func (es *EventServiceImpl) GetEvents(ctx context.Context, ifDeleted bool, userI
 }
 
 type EventDetail struct {
-	EventId      uuid.UUID
+	EventID      uuid.UUID
 	Title        string
 	Description  string
 	Date         time.Time
@@ -125,7 +125,7 @@ func (es *EventServiceImpl) GetEvent(ctx context.Context, eventID uuid.UUID, use
 		}
 	}
 	detail := EventDetail{
-		EventId:      event.EventId,
+		EventID:      event.EventID,
 		Title:        event.Title,
 		Description:  event.Description,
 		Date:         event.Date,

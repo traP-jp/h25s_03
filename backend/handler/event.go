@@ -70,7 +70,7 @@ func (h *Handler) GetEvent(ctx echo.Context, eventID openapi_types.UUID) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("get event (handler): %w", err))
 	}
 	return ctx.JSON(http.StatusOK, GetEventJSONResponseBody{
-		EventId:      event.EventId,
+		EventId:      event.EventID,
 		Title:        event.Title,
 		Description:  event.Description,
 		Date:         openapi_types.Date{Time: event.Date},
