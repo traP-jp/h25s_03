@@ -32,13 +32,16 @@ type Lottery struct {
 	Winners []Winner `gorm:"foreignKey:LotteryID;references:LotteryID" json:"winners,omitempty"`
 }
 
-func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID) ([]api.Lottery, error) {
+func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error) {
 	var lotteries []Lottery
-	if err := lr.db.Preload("Winners").Where("event_id = ?", eventID).Find(&lotteries).Error; err != nil {
+	query := lr.db.Preload("Winners").Where("event_id = ?", eventID)
+	if !ifDeleted {
+		query = query.Where("is_deleted = ?", false)
+	}
+	if err := query.Find(&lotteries).Error; err != nil {
 		return nil, err
 	}
 
-	// Convert to API response format
 	var apiLotteries []api.Lottery
 	for _, lottery := range lotteries {
 		lotteryUUID, err := uuid.Parse(lottery.LotteryID)

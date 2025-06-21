@@ -7,5 +7,5 @@ import (
 )
 
 type LotteryService interface {
-	GetLotteries(ctx echo.Context, eventID uuid.UUID) ([]api.Lottery, error)
+	GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error)
 }

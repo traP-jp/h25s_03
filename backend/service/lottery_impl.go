@@ -15,8 +15,8 @@ func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository) *Lott
 	return &LotteryServiceImpl{}
 }
 
-func (ls *LotteryServiceImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID) ([]api.Lottery, error) {
-	lotteries, err := ls.lotteryRepository.GetLotteries(ctx, eventID)
+func (ls *LotteryServiceImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error) {
+	lotteries, err := ls.lotteryRepository.GetLotteries(ctx, eventID, ifDeleted)
 	if err != nil {
 		return nil, err
 	}
