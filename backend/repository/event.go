@@ -11,4 +11,4 @@ type EventRepository interface {
 	RequestEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error)
 	DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error
 	UpdateEvent(ctx echo.Context, eventID openapi_types.UUID, requestBody api.PatchEventJSONRequestBody) error
-
+}
