@@ -2,27 +2,29 @@ package service
 
 import (
 	"github.com/eraxyso/go-template/repository"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 type AttendanceServiceImpl struct {
-	attendanceRepository repository.AttendanceRepository
+	attendeeRepository repository.AttendeeRepository
 }
 
-func NewAttendanceServiceImpl(exampleRepository repository.AttendanceRepository) *AttendanceServiceImpl {
-	return &AttendanceServiceImpl{}
+func NewAttendanceServiceImpl(attendeeRepository repository.AttendeeRepository) *AttendanceServiceImpl {
+	return &AttendanceServiceImpl{
+		attendeeRepository: attendeeRepository,
+	}
 }
 
-func (es AttendanceServiceImpl) CancelAttendance(ctx echo.Context, eventID openapi_types.UUID) error {
-	if err := es.attendanceRepository.DeleteAttendance(ctx, eventID); err != nil {
+func (as AttendanceServiceImpl) PostAttendance(ctx echo.Context, eventID uuid.UUID, userID string) error {
+	if err := as.attendeeRepository.InsertAttendees(ctx, eventID, []string{userID}); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (es AttendanceServiceImpl) CreateEvent(ctx echo.Context, eventID openapi_types.UUID) error {
-	if err := es.attendanceRepository.InsertAttendance(ctx, eventID); err != nil {
+func (as AttendanceServiceImpl) DeleteAttendance(ctx echo.Context, eventID uuid.UUID, userID string) error {
+	if err := as.attendeeRepository.DeleteAttendees(ctx, eventID, []string{userID}); err != nil {
 		return err
 	}
 	return nil
