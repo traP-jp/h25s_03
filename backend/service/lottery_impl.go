@@ -12,7 +12,9 @@ type LotteryServiceImpl struct {
 }
 
 func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository) *LotteryServiceImpl {
-	return &LotteryServiceImpl{}
+	return &LotteryServiceImpl{
+		lotteryRepository: lotteryRepository,
+	}
 }
 
 func (ls *LotteryServiceImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error) {
@@ -21,4 +23,12 @@ func (ls *LotteryServiceImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID, 
 		return nil, err
 	}
 	return lotteries, nil
+}
+
+func (ls *LotteryServiceImpl) DeleteLottery(ctx echo.Context, eventID uuid.UUID, lotteryID uuid.UUID) error {
+	err := ls.lotteryRepository.DeleteLottery(ctx, lotteryID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

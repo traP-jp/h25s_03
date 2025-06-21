@@ -64,3 +64,14 @@ func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUI
 
 	return apiLotteries, nil
 }
+
+func (lr *LotteryRepositoryImpl) DeleteLottery(ctx echo.Context, lotteryID uuid.UUID) error {
+	result := lr.db.Model(&Lottery{}).Where("lottery_id = ?", lotteryID).Update("is_deleted", true)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
+}
