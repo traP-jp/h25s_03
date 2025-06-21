@@ -9,6 +9,10 @@ func NewMiddlewareServiceImpl() *MiddlewareServiceImpl {
 	return &MiddlewareServiceImpl{}
 }
 
-func (ms *MiddlewareServiceImpl) MiddlewareServiceExample(next echo.HandlerFunc) echo.HandlerFunc {
-	return next
+func GetUserID(ctx echo.Context) string {
+	userID := ctx.Request().Header.Get("X-Forwarded-User")
+	if userID == "" {
+		userID = "cp20"
+	}
+	return userID
 }

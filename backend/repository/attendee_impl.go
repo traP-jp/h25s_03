@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -20,4 +22,25 @@ type Attendee struct {
 
 	// Association
 	Event Event `gorm:"foreignKey:EventID;references:EventID" json:"event,omitempty"`
+}
+
+func (ar *AttendeeRepositoryImpl) InsertAttendees(ctx echo.Context, eventID uuid.UUID, userIDs []string) error {
+	attendees := make([]Attendee, 0, len(userIDs))
+	for _, userID := range userIDs {
+		attendees = append(attendees, Attendee{
+			EventID: eventID.String(),
+			TraqID:  userID,
+		})
+	}
+	if err := ar.db.WithContext(ctx.Request().Context()).Create(&attendees).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ar *AttendeeRepositoryImpl) DeleteAttendees(ctx echo.Context, eventID uuid.UUID, userIDs []string) error {
+	if err := ar.db.WithContext(ctx.Request().Context()).Where("event_id = ? AND traq_id IN (?)", eventID.String(), userIDs).Delete(&Attendee{}).Error; err != nil {
+		return err
+	}
+	return nil
 }
