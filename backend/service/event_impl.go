@@ -21,7 +21,13 @@ func (es EventServiceImpl) CreateEvent(ctx echo.Context, event api.PostEventsJSO
 	}
 	return nil
 }
-
+func (es EventServiceImpl) GetEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error) {
+	events, err := es.eventRepository.RequestEventsSummary(ctx, isDelete)
+	if err != nil {
+		return nil, err
+	}
+	return events, nil
+}
 func (es EventServiceImpl) DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error {
 	if err := es.eventRepository.DeleteEvent(ctx, eventID); err != nil {
 		return err

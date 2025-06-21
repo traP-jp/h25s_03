@@ -15,10 +15,10 @@ type Event struct {
 	Attendees   []string           `json:"attendees"`
 	CreatedAt   time.Time          `json:"created_at"`
 	Date        openapi_types.Date `json:"date"`
-	Description string             `json:"description"`
+	Description *string            `json:"description,omitempty"`
 	EventId     openapi_types.UUID `json:"event_id"`
 	IsDelete    bool               `json:"is_delete"`
-	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
 	UpdatedAt   time.Time          `json:"updated_at"`
@@ -29,18 +29,21 @@ type EventBase struct {
 	Admins      []string           `json:"admins"`
 	Attendees   []string           `json:"attendees"`
 	Date        openapi_types.Date `json:"date"`
-	Description string             `json:"description"`
-	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	Description *string            `json:"description,omitempty"`
+	EventId     openapi_types.UUID `json:"event_id"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
 }
 
 // EventSummary defines model for EventSummary.
 type EventSummary struct {
-	Date      openapi_types.Date `json:"date"`
-	IsMeAdmin *bool              `json:"is_me_admin,omitempty"`
-	IsOpen    bool               `json:"is_open"`
-	Title     string             `json:"title"`
+	Date        openapi_types.Date `json:"date"`
+	Description *string            `json:"description,omitempty"`
+	EventId     openapi_types.UUID `json:"event_id"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
+	IsOpen      bool               `json:"is_open"`
+	Title       string             `json:"title"`
 }
 
 // EventUpdate defines model for EventUpdate.
@@ -48,16 +51,28 @@ type EventUpdate struct {
 	Admins      []string           `json:"admins"`
 	Attendees   []string           `json:"attendees"`
 	Date        openapi_types.Date `json:"date"`
-	Description string             `json:"description"`
+	Description *string            `json:"description,omitempty"`
 	EventId     openapi_types.UUID `json:"event_id"`
 	IsDelete    bool               `json:"is_delete"`
-	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	IsMeAdmin   bool               `json:"is_me_admin"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
 }
 
+// Lottery defines model for Lottery.
+type Lottery struct {
+	CreatedAt time.Time          `json:"created_at"`
+	EventId   openapi_types.UUID `json:"event_id"`
+	IsDelete  bool               `json:"is_delete"`
+	LotteryId openapi_types.UUID `json:"lottery_id"`
+	Title     string             `json:"title"`
+	UpdatedAt time.Time          `json:"updated_at"`
+	Winners   []string           `json:"winners"`
+}
+
 // GetEventsParams defines parameters for GetEvents.
 type GetEventsParams struct {
+	// IsDelete If include the deleted events
 	IsDelete *bool `form:"is_delete,omitempty" json:"is_delete,omitempty"`
 }
 

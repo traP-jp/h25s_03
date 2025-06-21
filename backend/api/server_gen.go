@@ -29,6 +29,24 @@ type ServerInterface interface {
 
 	// (PATCH /events/{eventID})
 	PatchEvent(ctx echo.Context, eventID openapi_types.UUID) error
+
+	// (DELETE /events/{eventID}/attendance)
+	DeleteAttendance(ctx echo.Context, eventID openapi_types.UUID) error
+
+	// (POST /events/{eventID}/attendance)
+	PostAttendance(ctx echo.Context, eventID openapi_types.UUID) error
+
+	// (GET /events/{eventID}/lotteries)
+	GetLotteries(ctx echo.Context, eventID openapi_types.UUID) error
+
+	// (POST /events/{eventID}/lotteries)
+	PostLottery(ctx echo.Context, eventID openapi_types.UUID) error
+
+	// (DELETE /events/{eventID}/lotteries/{lotteryID})
+	DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error
+
+	// (GET /events/{eventID}/lotteries/{lotteryID})
+	GetLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -111,6 +129,118 @@ func (w *ServerInterfaceWrapper) PatchEvent(ctx echo.Context) error {
 	return err
 }
 
+// DeleteAttendance converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteAttendance(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.DeleteAttendance(ctx, eventID)
+	return err
+}
+
+// PostAttendance converts echo context to params.
+func (w *ServerInterfaceWrapper) PostAttendance(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.PostAttendance(ctx, eventID)
+	return err
+}
+
+// GetLotteries converts echo context to params.
+func (w *ServerInterfaceWrapper) GetLotteries(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetLotteries(ctx, eventID)
+	return err
+}
+
+// PostLottery converts echo context to params.
+func (w *ServerInterfaceWrapper) PostLottery(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.PostLottery(ctx, eventID)
+	return err
+}
+
+// DeleteLottery converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteLottery(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// ------------- Path parameter "lotteryID" -------------
+	var lotteryID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lotteryID", ctx.Param("lotteryID"), &lotteryID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter lotteryID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.DeleteLottery(ctx, eventID, lotteryID)
+	return err
+}
+
+// GetLottery converts echo context to params.
+func (w *ServerInterfaceWrapper) GetLottery(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// ------------- Path parameter "lotteryID" -------------
+	var lotteryID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lotteryID", ctx.Param("lotteryID"), &lotteryID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter lotteryID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetLottery(ctx, eventID, lotteryID)
+	return err
+}
+
 // This is a simple interface which specifies echo.Route addition functions which
 // are present on both echo.Echo and echo.Group, since we want to allow using
 // either of them for path registration
@@ -144,5 +274,11 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.DELETE(baseURL+"/events/:eventID", wrapper.DeleteEvent)
 	router.GET(baseURL+"/events/:eventID", wrapper.GetEvent)
 	router.PATCH(baseURL+"/events/:eventID", wrapper.PatchEvent)
+	router.DELETE(baseURL+"/events/:eventID/attendance", wrapper.DeleteAttendance)
+	router.POST(baseURL+"/events/:eventID/attendance", wrapper.PostAttendance)
+	router.GET(baseURL+"/events/:eventID/lotteries", wrapper.GetLotteries)
+	router.POST(baseURL+"/events/:eventID/lotteries", wrapper.PostLottery)
+	router.DELETE(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.DeleteLottery)
+	router.GET(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.GetLottery)
 
 }
