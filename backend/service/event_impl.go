@@ -150,13 +150,13 @@ type EventOnEdit struct {
 }
 
 func (es *EventServiceImpl) EditEvent(ctx context.Context, eventID uuid.UUID, event EventOnEdit) error {
-	updateEvent := repository.EventOnUpdate{
+	eventOnUpdate := repository.EventOnUpdate{
 		Title:       event.Title,
 		Description: event.Description,
 		Date:        event.Date,
 		IsOpen:      event.IsOpen,
 	}
-	if err := es.eventRepository.UpdateEvent(ctx, eventID, updateEvent); err != nil {
+	if err := es.eventRepository.UpdateEvent(ctx, eventID, eventOnUpdate); err != nil {
 		return fmt.Errorf("update event (service): %w", err)
 	}
 	if err := es.adminRepository.UpdateAdmins(ctx, eventID, event.Admins); err != nil {

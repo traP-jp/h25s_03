@@ -150,13 +150,13 @@ type EventOnUpdate struct {
 }
 
 func (er *EventRepositoryImpl) UpdateEvent(ctx context.Context, eventID uuid.UUID, event EventOnUpdate) error {
-	updateEvent := eventModel{
+	eventOnUpdate := eventModel{
 		Title:       event.Title,
 		Description: event.Description,
 		Date:        event.Date,
 		IsOpen:      event.IsOpen,
 	}
-	if err := er.db.WithContext(ctx).Model(&eventModel{}).Where("event_id = ?", eventID.String()).Updates(updateEvent).Error; err != nil {
+	if err := er.db.WithContext(ctx).Model(&eventModel{}).Where("event_id = ?", eventID.String()).Updates(eventOnUpdate).Error; err != nil {
 		return fmt.Errorf("update event (repository): %w", err)
 	}
 	return nil
