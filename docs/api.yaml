@@ -51,7 +51,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventSummary'
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventSummary'
         '500':
           description: Internal Server Error
   /events/{eventID}:
