@@ -15,7 +15,7 @@ type Event struct {
 	Attendees    []string           `json:"attendees"`
 	CreatedAt    time.Time          `json:"created_at"`
 	Date         openapi_types.Date `json:"date"`
-	Description  *string            `json:"description,omitempty"`
+	Description  string             `json:"description"`
 	EventId      openapi_types.UUID `json:"event_id"`
 	IsDeleted    bool               `json:"is_deleted"`
 	IsMeAttendee bool               `json:"is_me_attendee"`
@@ -29,7 +29,7 @@ type EventBase struct {
 	Admins       []string           `json:"admins"`
 	Attendees    []string           `json:"attendees"`
 	Date         openapi_types.Date `json:"date"`
-	Description  *string            `json:"description,omitempty"`
+	Description  string             `json:"description"`
 	IsMeAttendee bool               `json:"is_me_attendee"`
 	IsOpen       bool               `json:"is_open"`
 	Title        string             `json:"title"`
@@ -39,19 +39,8 @@ type EventBase struct {
 type EventSummary struct {
 	Admins       []string           `json:"admins"`
 	Date         openapi_types.Date `json:"date"`
-	Description  *string            `json:"description,omitempty"`
-	IsMeAttendee bool               `json:"is_me_attendee"`
-	IsOpen       bool               `json:"is_open"`
-	Title        string             `json:"title"`
-}
-
-// EventUpdate defines model for EventUpdate.
-type EventUpdate struct {
-	Admins       []string           `json:"admins"`
-	Attendees    []string           `json:"attendees"`
-	Date         openapi_types.Date `json:"date"`
-	Description  *string            `json:"description,omitempty"`
-	IsDeleted    bool               `json:"is_deleted"`
+	Description  string             `json:"description"`
+	EventId      openapi_types.UUID `json:"event_id"`
 	IsMeAttendee bool               `json:"is_me_attendee"`
 	IsOpen       bool               `json:"is_open"`
 	Title        string             `json:"title"`
@@ -71,13 +60,13 @@ type Lottery struct {
 // GetEventsParams defines parameters for GetEvents.
 type GetEventsParams struct {
 	// IfDeleted If include the deleted events
-	IfDeleted bool `form:"if_deleted" json:"if_deleted"`
+	IfDeleted bool `form:"ifDeleted" json:"ifDeleted"`
 }
 
 // GetLotteriesParams defines parameters for GetLotteries.
 type GetLotteriesParams struct {
 	// IfDeleted If include the deleted lotteries
-	IfDeleted bool `form:"if_deleted" json:"if_deleted"`
+	IfDeleted bool `form:"ifDeleted" json:"ifDeleted"`
 }
 
 // PostLotteriesJSONBody defines parameters for PostLotteries.
@@ -85,11 +74,17 @@ type PostLotteriesJSONBody struct {
 	Title string `json:"title"`
 }
 
+// PostLotteryParams defines parameters for PostLottery.
+type PostLotteryParams struct {
+	// IfDuplicated If allow duplicated winning in the same event
+	IfDuplicated bool `form:"ifDuplicated" json:"ifDuplicated"`
+}
+
 // PostEventsJSONRequestBody defines body for PostEvents for application/json ContentType.
 type PostEventsJSONRequestBody = EventBase
 
 // PatchEventJSONRequestBody defines body for PatchEvent for application/json ContentType.
-type PatchEventJSONRequestBody = EventUpdate
+type PatchEventJSONRequestBody = EventBase
 
 // PostLotteriesJSONRequestBody defines body for PostLotteries for application/json ContentType.
 type PostLotteriesJSONRequestBody PostLotteriesJSONBody

@@ -57,7 +57,7 @@ func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid
 
 func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error) {
 	var lotteries []Lottery
-	query := lr.db.Preload("Winners").Where("event_id = ?", eventID)
+	query := lr.db.WithContext(ctx.Request().Context()).Preload("Winners").Where("event_id = ?", eventID)
 	if !ifDeleted {
 		query = query.Where("is_deleted = ?", false)
 	}
@@ -89,12 +89,8 @@ func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUI
 }
 
 func (lr *LotteryRepositoryImpl) DeleteLottery(ctx echo.Context, lotteryID uuid.UUID) error {
-	result := lr.db.Model(&Lottery{}).Where("lottery_id = ?", lotteryID).Update("is_deleted", true)
-	if result.Error != nil {
-		return result.Error
-	}
-	if result.RowsAffected == 0 {
-		return gorm.ErrRecordNotFound
+	if err := lr.db.WithContext(ctx.Request().Context()).Model(&Lottery{}).Where("lottery_id = ?", lotteryID).Update("is_deleted", true).Error; err != nil {
+		return err
 	}
 	return nil
 }

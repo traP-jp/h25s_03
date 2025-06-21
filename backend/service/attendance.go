@@ -1,13 +1,11 @@
 package service
 
 import (
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 type AttendanceService interface {
-	CancelAttendance(ctx echo.Context, eventID openapi_types.UUID) error
-	CreateAttendance(ctx echo.Context, eventID openapi_types.UUID) error
+	PostAttendance(ctx echo.Context, eventID uuid.UUID, userID string) error
+	DeleteAttendance(ctx echo.Context, eventID uuid.UUID, userID string) error
 }
-
-

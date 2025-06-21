@@ -27,7 +27,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
+                type: object
+                properties:
+                  event_id:
+                    type: string
+                    format: uuid
         '500':
           description: Internal Server Error
     get:
@@ -36,7 +40,7 @@ paths:
       operationId: getEvents
       parameters:
         - in: query
-          name: if_deleted
+          name: ifDeleted
           required: true
           schema:
             type: boolean
@@ -47,13 +51,9 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/EventSummary'
-                  - type: object
-                    properties:
-                      event_id:
-                        type: string
-                        format: uuid
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventSummary'
         '500':
           description: Internal Server Error
   /events/{eventID}:
@@ -93,7 +93,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventUpdate'
+              $ref: '#/components/schemas/EventBase'
       responses:
         '200':
           description: OK
@@ -196,7 +196,7 @@ paths:
             type: string
             format: uuid
         - in: query
-          name: if_deleted
+          name: ifDeleted
           required: true
           schema:
             type: boolean
@@ -230,6 +230,12 @@ paths:
           schema:
             type: string
             format: uuid
+        - in: query
+          name: ifDuplicated
+          required: true
+          schema:
+            type: boolean
+          description: If allow duplicated winning in the same event
       responses:
         '200':
           description: OK
@@ -296,6 +302,9 @@ components:
     EventSummary:
       type: object
       properties:
+        event_id:
+          type: string
+          format: uuid
         title:
           type: string
         description:
@@ -313,23 +322,45 @@ components:
             type: string
             description: traQ ID
       required:
+        - event_id
         - title
+        - description
         - date
         - is_open
         - is_me_attendee
         - admins
     EventBase:
-      allOf:
-        - $ref: '#/components/schemas/EventSummary'
-        - type: object
-          properties:
-            attendees:
-              type: array
-              items:
-                type: string
-                description: traQ ID
-          required:
-            - attendees
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        is_open:
+          type: boolean
+        is_me_attendee:
+          type: boolean
+        admins:
+          type: array
+          items:
+            type: string
+            description: traQ ID
+        attendees:
+          type: array
+          items:
+            type: string
+            description: traQ ID
+      required:
+        - title
+        - description
+        - date
+        - is_open
+        - is_me_attendee
+        - admins
+        - attendees
     Event:
       allOf:
         - $ref: '#/components/schemas/EventBase'
@@ -351,15 +382,6 @@ components:
             - is_deleted
             - updated_at
             - created_at
-    EventUpdate:
-      allOf:
-        - $ref: '#/components/schemas/EventBase'
-        - type: object
-          properties:
-            is_deleted:
-              type: boolean
-          required:
-            - is_deleted
     Lottery:
       type: object
       properties:

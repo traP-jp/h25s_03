@@ -7,5 +7,5 @@ import (
 
 type AdminRepository interface {
 	InsertAdmins(ctx echo.Context, eventID uuid.UUID, userIDs []string) error
-	RemoveAllAdmins(ctx echo.Context, eventID uuid.UUID) error
+	DeleteAdmins(ctx echo.Context, eventID uuid.UUID, userIDs []string) error
 }
