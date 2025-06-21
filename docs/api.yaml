@@ -36,7 +36,7 @@ paths:
       operationId: getEvents
       parameters:
         - in: query
-          name: is_delete
+          name: is_deleted
           schema:
             type: boolean
           description: If include the deleted events
@@ -298,30 +298,30 @@ components:
           format: date
         is_open:
           type: boolean
-        is_me_admin:
+        is_me_attendee:
           type: boolean
+        admins:
+          type: array
+          items:
+            type: string
+            description: traQ ID
       required:
         - title
         - date
         - is_open
-        - is_me_admin
+        - is_me_attendee
+        - admins
     EventBase:
       allOf:
         - $ref: '#/components/schemas/EventSummary'
         - type: object
           properties:
-            admins:
-              type: array
-              items:
-                type: string
-                description: traQ ID
             attendees:
               type: array
               items:
                 type: string
                 description: traQ ID
           required:
-            - admins
             - attendees
     Event:
       allOf:
@@ -331,7 +331,7 @@ components:
             event_id:
               type: string
               format: uuid
-            is_delete:
+            is_deleted:
               type: boolean
             updated_at:
               type: string
@@ -341,7 +341,7 @@ components:
               format: date-time
           required:
             - event_id
-            - is_delete
+            - is_deleted
             - updated_at
             - created_at
     EventUpdate:
@@ -349,10 +349,10 @@ components:
         - $ref: '#/components/schemas/EventBase'
         - type: object
           properties:
-            is_delete:
+            is_deleted:
               type: boolean
           required:
-            - is_delete
+            - is_deleted
     Lottery:
       type: object
       properties:
@@ -364,7 +364,7 @@ components:
           format: uuid
         title:
           type: string
-        is_delete:
+        is_deleted:
           type: boolean
         created_at:
           type: string
@@ -381,7 +381,7 @@ components:
         - lottery_id
         - event_id
         - title
-        - is_delete
+        - is_deleted
         - updated_at
         - created_at
         - winners

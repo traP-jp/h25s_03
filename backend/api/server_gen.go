@@ -63,11 +63,11 @@ func (w *ServerInterfaceWrapper) GetEvents(ctx echo.Context) error {
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetEventsParams
-	// ------------- Optional query parameter "is_delete" -------------
+	// ------------- Optional query parameter "is_deleted" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "is_delete", ctx.QueryParams(), &params.IsDelete)
+	err = runtime.BindQueryParameter("form", true, false, "is_deleted", ctx.QueryParams(), &params.IsDeleted)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter is_delete: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter is_deleted: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
