@@ -4,6 +4,7 @@ import (
 	"github.com/eraxyso/go-template/api"
 	"github.com/eraxyso/go-template/repository"
 	"github.com/labstack/echo/v4"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 type EventServiceImpl struct {
@@ -20,11 +21,23 @@ func (es EventServiceImpl) CreateEvent(ctx echo.Context, event api.PostEventsJSO
 	}
 	return nil
 }
-
 func (es EventServiceImpl) GetEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error) {
 	events, err := es.eventRepository.RequestEventsSummary(ctx, isDelete)
 	if err != nil {
 		return nil, err
 	}
 	return events, nil
+}
+func (es EventServiceImpl) DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error {
+	if err := es.eventRepository.DeleteEvent(ctx, eventID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (es EventServiceImpl) EditEvent(ctx echo.Context, eventID openapi_types.UUID, requestBody api.PatchEventJSONRequestBody) error {
+	if err := es.eventRepository.UpdateEvent(ctx, eventID, requestBody); err != nil {
+		return err
+	}
+	return nil
 }

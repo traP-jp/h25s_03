@@ -4,6 +4,7 @@ import (
 	"github.com/eraxyso/go-template/api"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 type EventRepositoryImpl struct {
@@ -24,4 +25,12 @@ func (es EventRepositoryImpl) InsertEvent(ctx echo.Context, event api.PostEvents
 func (es EventRepositoryImpl) RequestEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error) {
 	// todo
 	return nil, nil
+}
+
+func (es EventRepositoryImpl) DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error{
+	return nil
+}
+
+func (es EventRepositoryImpl) UptateEvent(ctx echo.Context, eventID openapi_types.UUID) error{
+	return nil
 }
