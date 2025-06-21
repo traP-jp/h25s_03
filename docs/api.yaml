@@ -322,6 +322,7 @@ components:
       required:
         - event_id
         - title
+        - description
         - date
         - is_open
         - is_me_attendee
