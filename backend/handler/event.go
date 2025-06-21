@@ -50,3 +50,10 @@ func (h *Handler) PatchEvent(ctx echo.Context, eventID openapi_types.UUID) error
 
 	return ctx.NoContent(http.StatusOK)
 }
+func (h *Handler) GetEvent(ctx echo.Context, eventID openapi_types.UUID) error {
+	event, err := h.EventService.GetEvent(ctx, eventID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	return ctx.JSON(http.StatusOK, event)
+}

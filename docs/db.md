@@ -46,7 +46,7 @@
 
 |     Field     |     Type     |     Null     |     Key     |     Default     |     Extra     |     Description     |
 |---------------|--------------|--------------|-------------|-----------------|---------------|---------------------|
-| lottery_id    | CHAR(36)     | NO           | PRIMARY     |                 |               |                     |
+| lottery_id    | CHAR(36)     | NO           | PRIMARY     |                 | UUID          |                     |
 | traq_id       | VARCHAR(32)  | NO           | PRIMARY     |                 |               |                     |
 | event_id      | CHAR(36)     | NO           |             |                 | UUID          |                     |
 
