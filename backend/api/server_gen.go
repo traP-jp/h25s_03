@@ -9,13 +9,26 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
-	// (POST /examples)
-	PostExample(ctx echo.Context, params PostExampleParams) error
+	// (GET /events)
+	GetEvents(ctx echo.Context, params GetEventsParams) error
+
+	// (POST /events)
+	PostEvents(ctx echo.Context) error
+
+	// (DELETE /events/{eventID})
+	DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error
+
+	// (GET /events/{eventID})
+	GetEvent(ctx echo.Context, eventID openapi_types.UUID) error
+
+	// (PATCH /events/{eventID})
+	PatchEvent(ctx echo.Context, eventID openapi_types.UUID) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -23,21 +36,78 @@ type ServerInterfaceWrapper struct {
 	Handler ServerInterface
 }
 
-// PostExample converts echo context to params.
-func (w *ServerInterfaceWrapper) PostExample(ctx echo.Context) error {
+// GetEvents converts echo context to params.
+func (w *ServerInterfaceWrapper) GetEvents(ctx echo.Context) error {
 	var err error
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params PostExampleParams
-	// ------------- Required query parameter "paramExample" -------------
+	var params GetEventsParams
+	// ------------- Optional query parameter "is_delete" -------------
 
-	err = runtime.BindQueryParameter("form", true, true, "paramExample", ctx.QueryParams(), &params.ParamExample)
+	err = runtime.BindQueryParameter("form", true, false, "is_delete", ctx.QueryParams(), &params.IsDelete)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter paramExample: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter is_delete: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostExample(ctx, params)
+	err = w.Handler.GetEvents(ctx, params)
+	return err
+}
+
+// PostEvents converts echo context to params.
+func (w *ServerInterfaceWrapper) PostEvents(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.PostEvents(ctx)
+	return err
+}
+
+// DeleteEvent converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteEvent(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.DeleteEvent(ctx, eventID)
+	return err
+}
+
+// GetEvent converts echo context to params.
+func (w *ServerInterfaceWrapper) GetEvent(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetEvent(ctx, eventID)
+	return err
+}
+
+// PatchEvent converts echo context to params.
+func (w *ServerInterfaceWrapper) PatchEvent(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "eventID" -------------
+	var eventID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "eventID", ctx.Param("eventID"), &eventID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.PatchEvent(ctx, eventID)
 	return err
 }
 
@@ -69,6 +139,10 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.POST(baseURL+"/examples", wrapper.PostExample)
+	router.GET(baseURL+"/events", wrapper.GetEvents)
+	router.POST(baseURL+"/events", wrapper.PostEvents)
+	router.DELETE(baseURL+"/events/:eventID", wrapper.DeleteEvent)
+	router.GET(baseURL+"/events/:eventID", wrapper.GetEvent)
+	router.PATCH(baseURL+"/events/:eventID", wrapper.PatchEvent)
 
 }
