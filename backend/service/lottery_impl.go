@@ -17,8 +17,8 @@ func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository) *Lott
 	}
 }
 
-func (ls LotteryServiceImpl) CreateLottery(ctx echo.Context, eventID uuid.UUID, lottery api.PostLotteriesJSONRequestBody) (uuid.UUID, error) {
-	createdID, err := ls.lotteryRepository.InsertLottery(ctx, eventID, lottery) 
+func (ls LotteryServiceImpl) CreateLottery(ctx echo.Context, eventID uuid.UUID, lottery api.PostLotteryJSONRequestBody) (uuid.UUID, error) {
+	createdID, err := ls.lotteryRepository.InsertLottery(ctx, eventID, lottery)
 	if err != nil {
 		return uuid.UUID{}, err
 	}

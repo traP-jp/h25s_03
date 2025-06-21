@@ -14,7 +14,8 @@ paths:
     post:
       tags:
         - Event
-      operationId: postEvents
+      operationId: postEvent
+      summary: 新しいイベントを作成します
       requestBody:
         required: true
         content:
@@ -38,13 +39,14 @@ paths:
       tags:
         - Event
       operationId: getEvents
+      summary: イベントの一覧を取得します
       parameters:
         - in: query
           name: ifDeleted
           required: true
           schema:
             type: boolean
-          description: If include the deleted events
+          description: このパラメータが true の場合、削除済みのイベントも含めて取得します
       responses:
         '200':
           description: OK
@@ -61,6 +63,7 @@ paths:
       tags:
         - Event
       operationId: getEvent
+      summary: 指定したイベントの詳細を取得します
       parameters:
         - in: path
           name: eventID
@@ -81,6 +84,7 @@ paths:
       tags:
         - Event
       operationId: patchEvent
+      summary: 指定したイベントの情報を更新します
       parameters:
         - in: path
           name: eventID
@@ -103,6 +107,7 @@ paths:
       tags:
         - Event
       operationId: deleteEvent
+      summary: 指定したイベントを削除します
       parameters:
         - in: path
           name: eventID
@@ -120,6 +125,7 @@ paths:
       tags:
         - Attendance
       operationId: postAttendance
+      summary: 指定したイベントに出席登録を行います
       parameters:
         - in: path
           name: eventID
@@ -136,6 +142,7 @@ paths:
       tags:
         - Attendance
       operationId: deleteAttendance
+      summary: 指定したイベントの出席登録をキャンセルします
       parameters:
         - in: path
           name: eventID
@@ -152,7 +159,8 @@ paths:
     post:
       tags:
         - Lottery
-      operationId: postLotteries
+      operationId: postLottery
+      summary: 指定したイベントに対して新しい抽選を作成します
       parameters:
         - in: path
           name: eventID
@@ -188,6 +196,7 @@ paths:
       tags:
         - Lottery
       operationId: getLotteries
+      summary: 指定したイベントの抽選の一覧を取得します
       parameters:
         - in: path
           name: eventID
@@ -200,7 +209,7 @@ paths:
           required: true
           schema:
             type: boolean
-          description: If include the deleted lotteries
+          description: このパラメータが true の場合、削除済みの抽選も含めて取得します
       responses:
         '200':
           description: OK
@@ -216,7 +225,8 @@ paths:
     post:
       tags:
         - Lottery
-      operationId: postLottery
+      operationId: rollLottery
+      summary: 指定した抽選を実行し、当選者を決定します
       parameters:
         - in: path
           name: eventID
@@ -235,7 +245,7 @@ paths:
           required: true
           schema:
             type: boolean
-          description: If allow duplicated winning in the same event
+          description: このパラメータが true の場合、同一イベント内での重複当選を許可します (false の場合も同一抽選内では重複当選は許可されません)
       responses:
         '200':
           description: OK
@@ -253,6 +263,7 @@ paths:
       tags:
         - Lottery
       operationId: getLottery
+      summary: 指定した抽選の詳細を取得します
       parameters:
         - in: path
           name: eventID
@@ -279,6 +290,7 @@ paths:
       tags:
         - Lottery
       operationId: deleteLottery
+      summary: 指定した抽選を削除します
       parameters:
         - in: path
           name: eventID

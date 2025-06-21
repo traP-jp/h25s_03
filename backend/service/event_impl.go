@@ -21,7 +21,7 @@ func NewEventServiceImpl(eventRepository repository.EventRepository, adminReposi
 	}
 }
 
-func (es EventServiceImpl) PostEvents(ctx echo.Context, newEvent api.PostEventsJSONRequestBody) (uuid.UUID, error) {
+func (es EventServiceImpl) PostEvents(ctx echo.Context, newEvent api.PostEventJSONRequestBody) (uuid.UUID, error) {
 	// to use transaction
 	eventID, err := es.eventRepository.InsertEvent(ctx, newEvent)
 	if err != nil {
