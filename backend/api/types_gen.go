@@ -35,6 +35,16 @@ type EventBase struct {
 	Title        string             `json:"title"`
 }
 
+// EventOnUpdate defines model for EventOnUpdate.
+type EventOnUpdate struct {
+	Admins      []string           `json:"admins"`
+	Attendees   []string           `json:"attendees"`
+	Date        openapi_types.Date `json:"date"`
+	Description string             `json:"description"`
+	IsOpen      bool               `json:"is_open"`
+	Title       string             `json:"title"`
+}
+
 // EventSummary defines model for EventSummary.
 type EventSummary struct {
 	Admins       []string           `json:"admins"`
@@ -84,7 +94,7 @@ type RollLotteryParams struct {
 type PostEventJSONRequestBody = EventBase
 
 // PatchEventJSONRequestBody defines body for PatchEvent for application/json ContentType.
-type PatchEventJSONRequestBody = EventBase
+type PatchEventJSONRequestBody = EventOnUpdate
 
 // PostLotteryJSONRequestBody defines body for PostLottery for application/json ContentType.
 type PostLotteryJSONRequestBody PostLotteryJSONBody
