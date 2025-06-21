@@ -18,3 +18,15 @@ func (h *Handler) PostEvents(ctx echo.Context) error {
 	}
 	return ctx.NoContent(http.StatusOK)
 }
+
+func (h *Handler) GetEvents(ctx echo.Context, params api.GetEventsParams) error {
+	isDelete := false
+	if params.IsDelete != nil {
+		isDelete = *params.IsDelete
+	}
+	events, err := h.EventService.GetEventsSummary(ctx, isDelete)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	return ctx.JSON(http.StatusOK, events)
+}

@@ -20,3 +20,11 @@ func (es EventServiceImpl) CreateEvent(ctx echo.Context, event api.PostEventsJSO
 	}
 	return nil
 }
+
+func (es EventServiceImpl) GetEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error) {
+	events, err := es.eventRepository.RequestEventsSummary(ctx, isDelete)
+	if err != nil {
+		return nil, err
+	}
+	return events, nil
+}

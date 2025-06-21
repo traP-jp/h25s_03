@@ -7,4 +7,5 @@ import (
 
 type EventService interface {
 	CreateEvent(ctx echo.Context, event api.PostEventsJSONRequestBody) error
+	GetEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error)
 }

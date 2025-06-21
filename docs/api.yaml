@@ -35,6 +35,7 @@ paths:
           name: is_delete
           schema:
             type: boolean
+          description: If include the deleted events
       responses:
         '200':
           description: OK
@@ -112,6 +113,8 @@ components:
       properties:
         title:
           type: string
+        description:
+          type: string
         date:
           type: string
           format: date
@@ -128,8 +131,6 @@ components:
         - $ref: '#/components/schemas/EventSummary'
         - type: object
           properties:
-            description:
-              type: string
             admins:
               type: array
               items:
@@ -141,7 +142,6 @@ components:
                 type: string
                 description: traQ ID
           required:
-            - description
             - admins
             - attendees
     Event:

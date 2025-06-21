@@ -15,7 +15,7 @@ type Event struct {
 	Attendees   []string           `json:"attendees"`
 	CreatedAt   time.Time          `json:"created_at"`
 	Date        openapi_types.Date `json:"date"`
-	Description string             `json:"description"`
+	Description *string            `json:"description,omitempty"`
 	EventId     openapi_types.UUID `json:"event_id"`
 	IsDelete    bool               `json:"is_delete"`
 	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
@@ -29,7 +29,7 @@ type EventBase struct {
 	Admins      []string           `json:"admins"`
 	Attendees   []string           `json:"attendees"`
 	Date        openapi_types.Date `json:"date"`
-	Description string             `json:"description"`
+	Description *string            `json:"description,omitempty"`
 	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
 	IsOpen      bool               `json:"is_open"`
 	Title       string             `json:"title"`
@@ -37,10 +37,11 @@ type EventBase struct {
 
 // EventSummary defines model for EventSummary.
 type EventSummary struct {
-	Date      openapi_types.Date `json:"date"`
-	IsMeAdmin *bool              `json:"is_me_admin,omitempty"`
-	IsOpen    bool               `json:"is_open"`
-	Title     string             `json:"title"`
+	Date        openapi_types.Date `json:"date"`
+	Description *string            `json:"description,omitempty"`
+	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
+	IsOpen      bool               `json:"is_open"`
+	Title       string             `json:"title"`
 }
 
 // EventUpdate defines model for EventUpdate.
@@ -48,7 +49,7 @@ type EventUpdate struct {
 	Admins      []string           `json:"admins"`
 	Attendees   []string           `json:"attendees"`
 	Date        openapi_types.Date `json:"date"`
-	Description string             `json:"description"`
+	Description *string            `json:"description,omitempty"`
 	EventId     openapi_types.UUID `json:"event_id"`
 	IsDelete    bool               `json:"is_delete"`
 	IsMeAdmin   *bool              `json:"is_me_admin,omitempty"`
