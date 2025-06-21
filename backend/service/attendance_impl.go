@@ -1,14 +1,18 @@
 package service
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/eraxyso/go-template/repository"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type AttendanceServiceImpl struct {
 	attendeeRepository repository.AttendeeRepository
 }
+
+var _ AttendanceService = &AttendanceServiceImpl{}
 
 func NewAttendanceServiceImpl(attendeeRepository repository.AttendeeRepository) *AttendanceServiceImpl {
 	return &AttendanceServiceImpl{
@@ -16,16 +20,16 @@ func NewAttendanceServiceImpl(attendeeRepository repository.AttendeeRepository) 
 	}
 }
 
-func (as AttendanceServiceImpl) PostAttendance(ctx echo.Context, eventID uuid.UUID, userID string) error {
+func (as *AttendanceServiceImpl) PostAttendance(ctx context.Context, eventID uuid.UUID, userID string) error {
 	if err := as.attendeeRepository.InsertAttendees(ctx, eventID, []string{userID}); err != nil {
-		return err
+		return fmt.Errorf("insert attendees (service): %w", err)
 	}
 	return nil
 }
 
-func (as AttendanceServiceImpl) DeleteAttendance(ctx echo.Context, eventID uuid.UUID, userID string) error {
+func (as *AttendanceServiceImpl) DeleteAttendance(ctx context.Context, eventID uuid.UUID, userID string) error {
 	if err := as.attendeeRepository.DeleteAttendees(ctx, eventID, []string{userID}); err != nil {
-		return err
+		return fmt.Errorf("delete attendees (service): %w", err)
 	}
 	return nil
 }
