@@ -3,4 +3,16 @@ import { createOpenApiHttp } from 'openapi-msw'
 import type { paths } from '@/api/schema'
 
 export const http = createOpenApiHttp<paths>()
-export const handlers = []
+export const handlers = [
+  http.get('/events', () => {
+    return HttpResponse.json([
+      {
+        title: 'Event 1',
+        description: 'Description for Event 1',
+        date: '2023-10-01',
+        is_open: true,
+        is_me_admin: false,
+      }
+    ])
+  })
+]
