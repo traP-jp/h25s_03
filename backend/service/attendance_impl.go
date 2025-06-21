@@ -8,6 +8,8 @@ type AttendanceServiceImpl struct {
 	eventRepository repository.EventRepository
 }
 
-func NewAttendanceServiceImpl(exampleRepository repository.EventRepository) *EventServiceImpl {
-	return &EventServiceImpl{}
+func NewAttendanceServiceImpl(exampleRepository repository.EventRepository) *AttendanceServiceImpl {
+	return &AttendanceServiceImpl{
+		eventRepository: exampleRepository,
+	}
 }
