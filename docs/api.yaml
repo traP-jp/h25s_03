@@ -1,0 +1,180 @@
+openapi: 3.0.4
+info:
+  title: API
+  version: 0.0.0
+servers:
+  - url: https://localhost:2048
+    description: Local server
+tags:
+  - name: Event
+  - name: Attendance
+  - name: Lottery
+paths:
+  /events:
+    post:
+      tags:
+        - Event
+      operationId: postEvents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventBase'
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+    get:
+      tags:
+        - Event
+      operationId: getEvents
+      parameters:
+        - in: query
+          name: is_delete
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventSummary'
+        '500':
+          description: Internal Server Error
+  /events/{eventID}:
+    get:
+      tags:
+        - Event
+      operationId: getEvent
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '500':
+          description: Internal Server Error
+    patch:
+      tags:
+        - Event
+      operationId: patchEvent
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventUpdate'
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - Event
+      operationId: deleteEvent
+      parameters:
+        - in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    EventSummary:
+      type: object
+      properties:
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+        is_open:
+          type: boolean
+        is_me_admin:
+          type: boolean
+      required:
+        - title
+        - date
+        - is_open
+    EventBase:
+      allOf:
+        - $ref: '#/components/schemas/EventSummary'
+        - type: object
+          properties:
+            description:
+              type: string
+            admins:
+              type: array
+              items:
+                type: string
+                description: traQ ID
+            attendees:
+              type: array
+              items:
+                type: string
+                description: traQ ID
+          required:
+            - description
+            - admins
+            - attendees
+    Event:
+      allOf:
+        - $ref: '#/components/schemas/EventBase'
+        - type: object
+          properties:
+            event_id:
+              type: string
+              format: uuid
+            is_delete:
+              type: boolean
+            updated_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+          required:
+            - event_id
+            - is_delete
+            - updated_at
+            - created_at
+    EventUpdate:
+      allOf:
+        - $ref: '#/components/schemas/EventBase'
+        - type: object
+          properties:
+            event_id:
+              type: string
+              format: uuid
+            is_delete:
+              type: boolean
+          required:
+            - event_id
+            - is_delete
