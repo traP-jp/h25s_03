@@ -36,39 +36,116 @@ type Event struct {
 	Lotteries []Lottery  `gorm:"foreignKey:EventID;references:EventID" json:"lotteries,omitempty"`
 }
 
-func (es EventRepositoryImpl) InsertEvent(ctx echo.Context, event api.PostEventsJSONRequestBody) error {
-	// todo
+func (er EventRepositoryImpl) InsertEvent(ctx echo.Context, newEvent api.PostEventsJSONRequestBody) (uuid.UUID, error) {
+	eventID := uuid.New()
+	event := Event{
+		EventID:     eventID.String(),
+		Title:       newEvent.Title,
+		Description: newEvent.Description,
+		Date:        newEvent.Date.Time,
+		IsOpen:      newEvent.IsOpen,
+		IsDeleted:   false,
+	}
+	if err := er.db.WithContext(ctx.Request().Context()).Create(&event).Error; err != nil {
+		return uuid.UUID{}, nil
+	}
+	return eventID, nil
+}
+
+func (er EventRepositoryImpl) GetEventSummaries(ctx echo.Context, ifDeleted bool, userID string) ([]api.EventSummary, error) {
+	query := er.db.WithContext(ctx.Request().Context()).Preload("Admins")
+	if !ifDeleted {
+		query = query.Where("is_deleted = ?", false)
+	}
+	var events []Event
+	err := query.Find(&events).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var eventSammaries []api.EventSummary
+	for _, event := range events {
+		eventID, err := uuid.Parse(event.EventID)
+		if err != nil {
+			return nil, err
+		}
+		isMeAttendee := false
+		for _, attendee := range event.Attendees {
+			if attendee.TraqID == userID {
+				isMeAttendee = true
+				break
+			}
+		}
+		var admins []string
+		for _, admin := range event.Admins {
+			admins = append(admins, admin.TraqID)
+		}
+		eventSammaries = append(eventSammaries, api.EventSummary{
+			EventId:      eventID,
+			Title:        event.Title,
+			Description:  event.Description,
+			Date:         openapi_types.Date{Time: event.Date},
+			IsOpen:       event.IsOpen,
+			IsMeAttendee: isMeAttendee,
+			Admins:       admins,
+		})
+	}
+	return eventSammaries, nil
+}
+
+func (er EventRepositoryImpl) GetEvent(ctx echo.Context, eventID uuid.UUID, userID string) (api.Event, error) {
+	var event Event
+	if err := er.db.WithContext(ctx.Request().Context()).Preload("Admins").Preload("Attendees").Where("event_id = ?", eventID).Find(&event).Error; err != nil {
+		return api.Event{}, err
+	}
+	eventID, err := uuid.Parse(event.EventID)
+	if err != nil {
+		return api.Event{}, err
+	}
+	var admins, attendees []string
+	for _, admin := range event.Admins {
+		admins = append(admins, admin.TraqID)
+	}
+	isMeAttendee := false
+	for _, attendee := range event.Attendees {
+		if attendee.TraqID == userID {
+			isMeAttendee = true
+		}
+		attendees = append(attendees, attendee.TraqID)
+	}
+	apiEvent := api.Event{
+		EventId:      eventID,
+		Title:        event.Title,
+		Description:  event.Description,
+		Date:         openapi_types.Date{Time: event.Date},
+		IsOpen:       event.IsOpen,
+		IsDeleted:    event.IsDeleted,
+		IsMeAttendee: isMeAttendee,
+		CreatedAt:    event.CreatedAt,
+		UpdatedAt:    event.UpdatedAt,
+		Admins:       admins,
+		Attendees:    attendees,
+	}
+	return apiEvent, nil
+}
+
+func (er EventRepositoryImpl) UpdateEvent(ctx echo.Context, eventID uuid.UUID, eventModification api.PatchEventJSONRequestBody) error {
+
+	eventUpdate := make(map[string]interface{})
+	eventUpdate["Title"] = eventModification.Title
+	eventUpdate["Description"] = eventModification.Description
+	eventUpdate["Date"] = eventModification.Date.Time
+	eventUpdate["IsOpen"] = eventModification.IsOpen
+
+	if err := er.db.WithContext(ctx.Request().Context()).Model(&Event{}).Where("event_id = ?", eventID.String()).Updates(eventUpdate).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
-func (es EventRepositoryImpl) RequestEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error) {
-	// todo
-	return nil, nil
-}
-
-func (es EventRepositoryImpl) DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error {
+func (er EventRepositoryImpl) DeleteEvent(ctx echo.Context, eventID uuid.UUID) error {
+	if err := er.db.WithContext(ctx.Request().Context()).Model(&Event{}).Where("event_id = ?", eventID.String()).Update("is_deleted", true).Error; err != nil {
+		return err
+	}
 	return nil
 }
-
-func (es EventRepositoryImpl) UptateEvent(ctx echo.Context, eventID openapi_types.UUID) error {
-	return nil
-}
-
-type SelectEvent struct {
-	EventId     uuid.UUID `json:"event_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Date        time.Time `json:"date"`
-	Admins      []string  `json:"admins"`
-	IsOpen      bool      `json:"is_open"`
-	Attendees   []string  `json:"attendees"`
-}
-
-func (es EventRepositoryImpl) SelectEvent(ctx echo.Context, eventID uuid.UUID) (event SelectEvent, err error) {
-	return SelectEvent{}, nil
-}
-
-// SELECT events.eventid, events.title, events.description,
-// events.data, events.isOpen, admins.userid, attendees.userid
-// FROM events JOIN admins ON events.eventid == admins.eventid
-// JOIN attendees ON events.eventid == attendees.eventid

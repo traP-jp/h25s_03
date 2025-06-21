@@ -1,11 +1,14 @@
 package repository
 
 import (
+	"context"
+	"fmt"
 	"time"
 
 	"github.com/eraxyso/go-template/api"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"gorm.io/gorm"
 )
 
@@ -30,6 +33,27 @@ type Lottery struct {
 	// Associations
 	Event   Event    `gorm:"foreignKey:EventID;references:EventID" json:"event,omitempty"`
 	Winners []Winner `gorm:"foreignKey:LotteryID;references:LotteryID" json:"winners,omitempty"`
+}
+
+func (ls *LotteryRepositoryImpl) InsertLottery(ctx context.Context, eventID uuid.UUID, lotteryBody api.PostEventsJSONRequestBody) (uuid.UUID, error) {
+
+	newLottery := &Lottery{
+		LotteryID: uuid.NewString(),
+
+		EventID: eventID.String(),
+		Title:   lotteryBody.Title,
+	}
+
+	if err := ls.db.WithContext(ctx).Create(newLottery).Error; err != nil {
+		return uuid.Nil, fmt.Errorf("failed to create lottery in db: %w", err)
+	}
+
+	createdID, err := uuid.Parse(newLottery.LotteryID)
+	if err != nil {
+		return uuid.Nil, fmt.Errorf("failed to parse created lottery id: %w", err)
+	}
+
+	return createdID, nil
 }
 
 func (lr *LotteryRepositoryImpl) GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error) {
@@ -70,4 +94,8 @@ func (lr *LotteryRepositoryImpl) DeleteLottery(ctx echo.Context, lotteryID uuid.
 		return err
 	}
 	return nil
+}
+
+func (lr LotteryRepositoryImpl) InsertLottery(ctx echo.Context, eventID openapi_types.UUID) (uuid.UUID, error) {
+	return uuid.Nil, nil
 }
