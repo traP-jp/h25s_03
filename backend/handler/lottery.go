@@ -15,3 +15,11 @@ func (h *Handler) GetLotteries(ctx echo.Context, eventID openapi_types.UUID, par
 	}
 	return ctx.JSON(http.StatusOK, lotteries)
 }
+
+func (h *Handler) DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error {
+	err := h.LotteryService.DeleteLottery(ctx, eventID, lotteryID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	return ctx.NoContent(http.StatusNoContent)
+}
