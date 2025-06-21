@@ -50,7 +50,7 @@ func (ar *AttendeeRepositoryImpl) DeleteAttendees(ctx context.Context, eventID u
 }
 
 func (ar *AttendeeRepositoryImpl) UpdateAttendees(ctx context.Context, eventID uuid.UUID, userIDs []string) error {
-	if err := ar.DeleteAttendees(ctx, eventID, nil); err != nil {
+	if err := ar.db.WithContext(ctx).Where("event_id = ?", eventID.String()).Delete(&attendeeModel{}).Error; err != nil {
 		return fmt.Errorf("delete attendees (repository): %w", err)
 	}
 	if err := ar.InsertAttendees(ctx, eventID, userIDs); err != nil {

@@ -50,7 +50,7 @@ func (ar *AdminRepositoryImpl) DeleteAdmins(ctx context.Context, eventID uuid.UU
 }
 
 func (ar *AdminRepositoryImpl) UpdateAdmins(ctx context.Context, eventID uuid.UUID, userIDs []string) error {
-	if err := ar.DeleteAdmins(ctx, eventID, nil); err != nil {
+	if err := ar.db.WithContext(ctx).Where("event_id = ?", eventID.String()).Delete(&adminModel{}).Error; err != nil {
 		return fmt.Errorf("delete admins (repository): %w", err)
 	}
 	if err := ar.InsertAdmins(ctx, eventID, userIDs); err != nil {
