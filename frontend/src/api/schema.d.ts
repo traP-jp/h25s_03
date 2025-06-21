@@ -61,7 +61,7 @@ export interface paths {
         };
         get: operations["getLotteries"];
         put?: never;
-        post: operations["postLottery"];
+        post: operations["postLotteries"];
         delete?: never;
         options?: never;
         head?: never;
@@ -77,7 +77,7 @@ export interface paths {
         };
         get: operations["getLottery"];
         put?: never;
-        post?: never;
+        post: operations["postLottery"];
         delete: operations["deleteLottery"];
         options?: never;
         head?: never;
@@ -94,25 +94,23 @@ export interface components {
             /** Format: date */
             date: string;
             is_open: boolean;
-            is_me_admin?: boolean;
+            is_me_attendee: boolean;
+            admins: string[];
         };
         EventBase: components["schemas"]["EventSummary"] & {
-            admins: string[];
             attendees: string[];
         };
         Event: components["schemas"]["EventBase"] & {
             /** Format: uuid */
             event_id: string;
-            is_delete: boolean;
+            is_deleted: boolean;
             /** Format: date-time */
             updated_at: string;
             /** Format: date-time */
             created_at: string;
         };
         EventUpdate: components["schemas"]["EventBase"] & {
-            /** Format: uuid */
-            event_id: string;
-            is_delete: boolean;
+            is_deleted: boolean;
         };
         Lottery: {
             /** Format: uuid */
@@ -120,7 +118,7 @@ export interface components {
             /** Format: uuid */
             event_id: string;
             title: string;
-            is_delete: boolean;
+            is_deleted: boolean;
             /** Format: date-time */
             created_at: string;
             /** Format: date-time */
@@ -138,9 +136,9 @@ export type $defs = Record<string, never>;
 export interface operations {
     getEvents: {
         parameters: {
-            query?: {
+            query: {
                 /** @description If include the deleted events */
-                is_delete?: boolean;
+                ifDeleted: boolean;
             };
             header?: never;
             path?: never;
@@ -154,7 +152,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EventSummary"][];
+                    "application/json": components["schemas"]["EventSummary"] & {
+                        /** Format: uuid */
+                        event_id?: string;
+                    };
                 };
             };
             /** @description Internal Server Error */
@@ -184,7 +185,12 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        event_id?: string;
+                    };
+                };
             };
             /** @description Internal Server Error */
             500: {
@@ -338,7 +344,10 @@ export interface operations {
     };
     getLotteries: {
         parameters: {
-            query?: never;
+            query: {
+                /** @description If include the deleted lotteries */
+                ifDeleted: boolean;
+            };
             header?: never;
             path: {
                 eventID: string;
@@ -365,7 +374,7 @@ export interface operations {
             };
         };
     };
-    postLottery: {
+    postLotteries: {
         parameters: {
             query?: never;
             header?: never;
@@ -374,14 +383,25 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                };
+            };
+        };
         responses: {
             /** @description OK */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        lottery_id?: string;
+                    };
+                };
             };
             /** @description Internal Server Error */
             500: {
@@ -411,6 +431,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Lottery"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    postLottery: {
+        parameters: {
+            query: {
+                /** @description If allow duplicated winning in the same event */
+                ifDuplicated: boolean;
+            };
+            header?: never;
+            path: {
+                eventID: string;
+                lotteryID: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description traQ ID */
+                        winner?: string;
+                    };
                 };
             };
             /** @description Internal Server Error */
