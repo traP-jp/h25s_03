@@ -37,7 +37,7 @@ type ServerInterface interface {
 	PostAttendance(ctx echo.Context, eventID openapi_types.UUID) error
 
 	// (GET /events/{eventID}/lotteries)
-	GetLotteries(ctx echo.Context, eventID openapi_types.UUID) error
+	GetLotteries(ctx echo.Context, eventID openapi_types.UUID, params GetLotteriesParams) error
 
 	// (POST /events/{eventID}/lotteries)
 	PostLotteries(ctx echo.Context, eventID openapi_types.UUID) error
@@ -175,8 +175,17 @@ func (w *ServerInterfaceWrapper) GetLotteries(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter eventID: %s", err))
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetLotteriesParams
+	// ------------- Optional query parameter "is_deleted" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "is_deleted", ctx.QueryParams(), &params.IsDeleted)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter is_deleted: %s", err))
+	}
+
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetLotteries(ctx, eventID)
+	err = w.Handler.GetLotteries(ctx, eventID, params)
 	return err
 }
 

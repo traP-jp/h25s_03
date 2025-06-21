@@ -194,6 +194,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - in: query
+          name: is_deleted
+          schema:
+            type: boolean
+          description: If include the deleted lotteries
       responses:
         '200':
           description: OK
