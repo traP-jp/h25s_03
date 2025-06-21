@@ -71,13 +71,13 @@ type Lottery struct {
 // GetEventsParams defines parameters for GetEvents.
 type GetEventsParams struct {
 	// IfDeleted If include the deleted events
-	IfDeleted *bool `form:"if_deleted,omitempty" json:"if_deleted,omitempty"`
+	IfDeleted bool `form:"if_deleted" json:"if_deleted"`
 }
 
 // GetLotteriesParams defines parameters for GetLotteries.
 type GetLotteriesParams struct {
 	// IfDeleted If include the deleted lotteries
-	IfDeleted *bool `form:"if_deleted,omitempty" json:"if_deleted,omitempty"`
+	IfDeleted bool `form:"if_deleted" json:"if_deleted"`
 }
 
 // PostLotteriesJSONBody defines parameters for PostLotteries.
