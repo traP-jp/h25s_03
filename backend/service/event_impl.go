@@ -30,3 +30,10 @@ func (es EventServiceImpl)DeleteEvent(ctx echo.Context, eventID openapi_types.UU
 	}
 	return nil
 }
+
+func (es EventServiceImpl)EditEvent(ctx echo.Context, eventID openapi_types.UUID,requestBody api.PatchEventJSONRequestBody) error{
+	if err := es.eventRepository.UpdateEvent(ctx, eventID,requestBody); err != nil {
+		return err
+	}
+	return nil
+}

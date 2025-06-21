@@ -29,3 +29,7 @@ func (es EventRepositoryImpl) InsertEvent(ctx echo.Context, event api.PostEvents
 func (es EventRepositoryImpl) DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error{
 	return nil
 }
+
+func (es EventRepositoryImpl) UptateEvent(ctx echo.Context, eventID openapi_types.UUID) error{
+	return nil
+}

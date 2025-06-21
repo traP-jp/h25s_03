@@ -9,4 +9,5 @@ import (
 type EventRepository interface {
 	InsertEvent(ctx echo.Context, event api.PostEventsJSONRequestBody) error
 	DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error
+	UpdateEvent(ctx echo.Context, eventID openapi_types.UUID, requestBody api.PatchEventJSONRequestBody) error
 }

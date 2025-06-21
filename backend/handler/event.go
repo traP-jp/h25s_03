@@ -26,3 +26,15 @@ func (h *Handler) DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) erro
 	}
 	return ctx.NoContent(http.StatusOK)
 }
+
+func (h *Handler) PatchEvent(ctx echo.Context, eventID openapi_types.UUID) error{
+	requestBody := api.PatchEventJSONRequestBody{}
+	if err := ctx.Bind(&requestBody); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	if err := h.EventService.EditEvent(ctx, eventID,requestBody); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+
+	return ctx.NoContent(http.StatusOK)
+}
