@@ -22,17 +22,15 @@ func (es EventServiceImpl) CreateEvent(ctx echo.Context, event api.PostEventsJSO
 	return nil
 }
 
-
-
-func (es EventServiceImpl)DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error{
+func (es EventServiceImpl) DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error {
 	if err := es.eventRepository.DeleteEvent(ctx, eventID); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (es EventServiceImpl)EditEvent(ctx echo.Context, eventID openapi_types.UUID,requestBody api.PatchEventJSONRequestBody) error{
-	if err := es.eventRepository.UpdateEvent(ctx, eventID,requestBody); err != nil {
+func (es EventServiceImpl) EditEvent(ctx echo.Context, eventID openapi_types.UUID, requestBody api.PatchEventJSONRequestBody) error {
+	if err := es.eventRepository.UpdateEvent(ctx, eventID, requestBody); err != nil {
 		return err
 	}
 	return nil
