@@ -49,7 +49,7 @@ type ServerInterface interface {
 	GetLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error
 
 	// (POST /events/{eventID}/lotteries/{lotteryID})
-	PostLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error
+	PostLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID, params PostLotteryParams) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -63,11 +63,11 @@ func (w *ServerInterfaceWrapper) GetEvents(ctx echo.Context) error {
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetEventsParams
-	// ------------- Required query parameter "if_deleted" -------------
+	// ------------- Required query parameter "ifDeleted" -------------
 
-	err = runtime.BindQueryParameter("form", true, true, "if_deleted", ctx.QueryParams(), &params.IfDeleted)
+	err = runtime.BindQueryParameter("form", true, true, "ifDeleted", ctx.QueryParams(), &params.IfDeleted)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter if_deleted: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter ifDeleted: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
@@ -177,11 +177,11 @@ func (w *ServerInterfaceWrapper) GetLotteries(ctx echo.Context) error {
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetLotteriesParams
-	// ------------- Required query parameter "if_deleted" -------------
+	// ------------- Required query parameter "ifDeleted" -------------
 
-	err = runtime.BindQueryParameter("form", true, true, "if_deleted", ctx.QueryParams(), &params.IfDeleted)
+	err = runtime.BindQueryParameter("form", true, true, "ifDeleted", ctx.QueryParams(), &params.IfDeleted)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter if_deleted: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter ifDeleted: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
@@ -272,8 +272,17 @@ func (w *ServerInterfaceWrapper) PostLottery(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter lotteryID: %s", err))
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PostLotteryParams
+	// ------------- Required query parameter "ifDuplicated" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "ifDuplicated", ctx.QueryParams(), &params.IfDuplicated)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter ifDuplicated: %s", err))
+	}
+
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostLottery(ctx, eventID, lotteryID)
+	err = w.Handler.PostLottery(ctx, eventID, lotteryID, params)
 	return err
 }
 

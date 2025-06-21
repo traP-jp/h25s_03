@@ -71,18 +71,24 @@ type Lottery struct {
 // GetEventsParams defines parameters for GetEvents.
 type GetEventsParams struct {
 	// IfDeleted If include the deleted events
-	IfDeleted bool `form:"if_deleted" json:"if_deleted"`
+	IfDeleted bool `form:"ifDeleted" json:"ifDeleted"`
 }
 
 // GetLotteriesParams defines parameters for GetLotteries.
 type GetLotteriesParams struct {
 	// IfDeleted If include the deleted lotteries
-	IfDeleted bool `form:"if_deleted" json:"if_deleted"`
+	IfDeleted bool `form:"ifDeleted" json:"ifDeleted"`
 }
 
 // PostLotteriesJSONBody defines parameters for PostLotteries.
 type PostLotteriesJSONBody struct {
 	Title string `json:"title"`
+}
+
+// PostLotteryParams defines parameters for PostLottery.
+type PostLotteryParams struct {
+	// IfDuplicated If allow duplicated winning in the same event
+	IfDuplicated bool `form:"ifDuplicated" json:"ifDuplicated"`
 }
 
 // PostEventsJSONRequestBody defines body for PostEvents for application/json ContentType.

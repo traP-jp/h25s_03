@@ -27,7 +27,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
+                type: object
+                properties:
+                  event_id:
+                    type: string
+                    format: uuid
         '500':
           description: Internal Server Error
     get:
@@ -36,7 +40,7 @@ paths:
       operationId: getEvents
       parameters:
         - in: query
-          name: if_deleted
+          name: ifDeleted
           required: true
           schema:
             type: boolean
@@ -196,7 +200,7 @@ paths:
             type: string
             format: uuid
         - in: query
-          name: if_deleted
+          name: ifDeleted
           required: true
           schema:
             type: boolean
@@ -230,6 +234,12 @@ paths:
           schema:
             type: string
             format: uuid
+        - in: query
+          name: ifDuplicated
+          required: true
+          schema:
+            type: boolean
+          description: If allow duplicated winning in the same event
       responses:
         '200':
           description: OK
