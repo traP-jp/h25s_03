@@ -25,7 +25,6 @@ const fetchLottery = async () => {
   })
   lottery.value = response.data
 }
-
 onMounted(fetchLottery)
 </script>
 
@@ -51,7 +50,7 @@ onMounted(fetchLottery)
         </div>
       </div>
       <v-card-actions>
-        <v-btn :to="{ name: 'EventDetail', params: { eventId: 'eventId' } }"> 戻る </v-btn>
+        <v-btn :to="{ name: 'EventDetail', params: { eventId: eventId } }"> 戻る </v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
