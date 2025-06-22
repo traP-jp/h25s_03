@@ -346,6 +346,17 @@ const createEvent = async () => {
   // API呼び出し処理
   await addEvent()
 
+  events.value =
+    (
+      await apiClient.GET('/events', {
+        params: {
+          query: {
+            ifDeleted: false,
+          },
+        },
+      })
+    ).data ?? []
+
   // フォームリセット
   newEvent.value = {
     title: '',
