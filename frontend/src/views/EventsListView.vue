@@ -337,6 +337,7 @@ const newEvent = ref<components['schemas']['EventBase']>({
 
 // イベント作成関数を追加
 const createEvent = async () => {
+  console.log('Creating event:', newEvent.value)
   // バリデーション
   if (!newEvent.value.title || !newEvent.value.date) {
     // エラーハンドリング（実装は要件に応じて）
