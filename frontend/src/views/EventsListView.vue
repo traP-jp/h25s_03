@@ -1,7 +1,7 @@
 <template>
   <v-container>
     {ページタイトル}
-    
+
     <div class="text-h5 mb-4">
       <v-card class="mx-auto my-8" elevation="16" max-width="600">
         <!--イベント作成エリア-->
@@ -409,7 +409,6 @@ const detailSearchForm = ref({
   myRole: 'all', // 'all', 'admin', 'participant_only'
 })
 
-
 // v-data-tableのsearchプロパティを修正
 const tableSearch = computed(() => {
   // 詳細検索が有効な場合は特別な値を返す
@@ -425,8 +424,11 @@ const tableSearch = computed(() => {
 })
 
 // customFilter関数を修正
-const customFilter = (value: string, search: string, item?: { raw?: components['schemas']['EventSummary'] }) => {
-
+const customFilter = (
+  value: string,
+  search: string,
+  item?: { raw?: components['schemas']['EventSummary'] },
+) => {
   if (!item?.raw) return true
   // 詳細検索が有効な場合
   if (showDetailSearch.value && search === 'detail_search') {
@@ -439,7 +441,7 @@ const customFilter = (value: string, search: string, item?: { raw?: components['
     } else if (currentTabValue === 'attend_event') {
       tabResult = item.raw?.is_me_attendee === true
     } else if (currentTabValue === 'administrate_event') {
-      tabResult = item.raw?.admins ? (my_id.value in item.raw?.admins) :true
+      tabResult = item.raw?.admins ? my_id.value in item.raw?.admins : true
     }
 
     if (!tabResult) return false
@@ -484,10 +486,14 @@ const customFilter = (value: string, search: string, item?: { raw?: components['
       return false
     }
 
-    if (form.myRole === 'admin' && !(item.raw?.admins ? (my_id.value in item.raw?.admins) :false)) {
+    if (form.myRole === 'admin' && !(item.raw?.admins ? my_id.value in item.raw?.admins : false)) {
       return false
     }
-    if (form.myRole === 'participant_only' && item.raw?.admins ? (my_id.value in item.raw?.admins) :false) {
+    if (
+      form.myRole === 'participant_only' && item.raw?.admins
+        ? my_id.value in item.raw?.admins
+        : false
+    ) {
       return false
     }
 
@@ -514,7 +520,7 @@ const customFilter = (value: string, search: string, item?: { raw?: components['
     } else if (currentTabValue === 'attend_event') {
       return item.raw?.is_me_attendee === true
     } else if (currentTabValue === 'administrate_event') {
-      return item.raw?.admins ? (my_id.value in item.raw?.admins) :true
+      return item.raw?.admins ? my_id.value in item.raw?.admins : true
     }
     return true
   }
@@ -527,7 +533,7 @@ const customFilter = (value: string, search: string, item?: { raw?: components['
   } else if (search === 'attend_event') {
     return item.raw?.is_me_attendee === true
   } else if (search === 'administrate_event') {
-    return item.raw?.admins ? (my_id.value in item.raw?.admins) :true
+    return item.raw?.admins ? my_id.value in item.raw?.admins : true
   }
 
   return true
