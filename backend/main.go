@@ -73,7 +73,7 @@ func main() {
 	mr.addRoute(http.MethodPatch, "/events/:eventID", server.MiddlewareService.EventAdminAuthentication)
 	mr.addRoute(http.MethodDelete, "/events/:eventID", server.MiddlewareService.EventAdminAuthentication)
 	mr.addRoute(http.MethodPost, "/events/:eventID/lotteries", server.MiddlewareService.EventAdminAuthentication)
-	mr.addRoute(http.MethodPost, "/events/:eventID/lottereis/:lotteryID", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodPost, "/events/:eventID/lotteries/:lotteryID", server.MiddlewareService.EventAdminAuthentication)
 	mr.addRoute(http.MethodDelete, "/events/:eventID/lotteries/:lotteryID", server.MiddlewareService.EventAdminAuthentication)
 
 	mr.addRoute(http.MethodPost, "/events/:eventID/attendance", server.MiddlewareService.EventRegistrationAuthentication)
