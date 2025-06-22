@@ -7,4 +7,4 @@ tools:
 dev:
 	go mod download
 	go generate ./...
-	export $(shell grep -v '^#' .env.dev | xargs) && go run .
+	go run .

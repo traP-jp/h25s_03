@@ -22,19 +22,23 @@ func NewEventRepositoryImpl(db *gorm.DB) *EventRepositoryImpl {
 }
 
 type eventModel struct {
-	EventID     string    `gorm:"column:event_id;type:char(36);primaryKey;not null" json:"event_id"`
-	Title       string    `gorm:"column:title;type:varchar(100);not null" json:"title"`
-	Description string    `gorm:"column:description;type:text;not null" json:"description"`
-	Date        time.Time `gorm:"column:date;type:date;not null" json:"date"`
-	IsOpen      bool      `gorm:"column:is_open;type:boolean;not null" json:"is_open"`
-	IsDeleted   bool      `gorm:"column:is_deleted;type:boolean;not null" json:"is_deleted"`
-	CreatedAt   time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP;autoCreateTime" json:"created_at"`
-	UpdatedAt   time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP;autoUpdateTime" json:"updated_at"`
+	EventID     string    `gorm:"column:event_id;type:char(36);primaryKey;not null"`
+	Title       string    `gorm:"column:title;type:varchar(100);not null"`
+	Description string    `gorm:"column:description;type:text;not null"`
+	Date        time.Time `gorm:"column:date;type:date;not null"`
+	IsOpen      bool      `gorm:"column:is_open;type:boolean;not null"`
+	IsDeleted   bool      `gorm:"column:is_deleted;type:boolean;not null"`
+	CreatedAt   time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP;autoCreateTime"`
+	UpdatedAt   time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP;autoUpdateTime"`
 
 	// Associations
-	Admins    []adminModel    `gorm:"foreignKey:EventID;references:EventID" json:"admins,omitempty"`
-	Attendees []attendeeModel `gorm:"foreignKey:EventID;references:EventID" json:"attendees,omitempty"`
-	Lotteries []lotteryModel  `gorm:"foreignKey:EventID;references:EventID" json:"lotteries,omitempty"`
+	Admins    []adminModel    `gorm:"foreignKey:EventID;references:EventID"`
+	Attendees []attendeeModel `gorm:"foreignKey:EventID;references:EventID"`
+	Lotteries []lotteryModel  `gorm:"foreignKey:EventID;references:EventID"`
+}
+
+func (eventModel) TableName() string {
+	return "events"
 }
 
 type EventOnCreate struct {

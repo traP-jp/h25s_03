@@ -32,8 +32,8 @@ var (
 	)
 
 	adminRepositoryBind = wire.Bind(
-		new(repository.adminRepository),
-		new(*repository.adminRepositoryImpl),
+		new(repository.AdminRepository),
+		new(*repository.AdminRepositoryImpl),
 	)
 	attendeeRepositoryBind = wire.Bind(
 		new(repository.AttendeeRepository),
@@ -47,10 +47,10 @@ var (
 		new(repository.LotteryRepository),
 		new(*repository.LotteryRepositoryImpl),
 	)
-	winnerRepositoryBind = wire.Bind(
-		new(repository.WinnerRepository),
-		new(*repository.WinnerRepositoryImpl),
-	)
+	// winnerRepositoryBind = wire.Bind(
+	// 	new(repository.WinnerRepository),
+	// 	new(*repository.WinnerRepositoryImpl),
+	// )
 )
 
 func InitializeServer(db *gorm.DB) *handler.Handler {
@@ -74,8 +74,8 @@ func InitializeServer(db *gorm.DB) *handler.Handler {
 		repository.NewEventRepositoryImpl,
 		lotteryRepositoryBind,
 		repository.NewLotteryRepositoryImpl,
-		winnerRepositoryBind,
-		repository.NewWinnerRepositoryImpl,
+		// winnerRepositoryBind,
+		// repository.NewWinnerRepositoryImpl,
 	)
 
 	return &handler.Handler{}

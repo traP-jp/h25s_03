@@ -3,7 +3,7 @@ info:
   title: API
   version: 0.0.0
 servers:
-  - url: https://localhost:2048
+  - url: http://localhost:8080
     description: Local server
 tags:
   - name: User
