@@ -1,9 +1,14 @@
 package main
 
 import (
+	"net/http"
 	"os"
+	"time"
 
-	"github.com/eraxyso/go-template/api"
+	"traquji/api"
+	"traquji/repository"
+
+	sql_mysql "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	OapiValidator "github.com/oapi-codegen/echo-middleware"
@@ -42,17 +47,37 @@ func main() {
 	if !exists {
 		e.Logger.Fatal("NS_MARIADB_DATABASE environment variable is not set")
 	}
-	dsn := dbUser + ":" + dbPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	config := &sql_mysql.Config{
+		User:                 dbUser,
+		Passwd:               dbPassword,
+		Net:                  "tcp",
+		Addr:                 dbHost + ":" + dbPort,
+		DBName:               dbName,
+		AllowNativePasswords: true,
+		ParseTime:            true,
+		Loc:                  time.Local,
+	}
+	db, err := gorm.Open(mysql.Open(config.FormatDSN()), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		e.Logger.Fatal("Failed to connect to database:", err)
+	}
+	err = repository.Migrate(db)
+	if err != nil {
+		e.Logger.Fatal("Failed to migrate database:", err)
 	}
 	server := InitializeServer(db)
 
 	mr := newMiddlewareRouter()
 
-	mr.addRoute("POST", "/exmaples", server.MiddlewareService.MiddlewareServiceExample)
-	mr.addGroup("POST", "/examples", server.MiddlewareService.MiddlewareServiceExample)
+	mr.addRoute(http.MethodPatch, "/events/:eventID", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodDelete, "/events/:eventID", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodPost, "/events/:eventID/lotteries", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodPost, "/events/:eventID/lottereis/:lotteryID", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodDelete, "/events/:eventID/lotteries/:lotteryID", server.MiddlewareService.EventAdminAuthentication)
+
+	mr.addRoute(http.MethodPost, "/events/:eventID/attendance", server.MiddlewareService.EventRegistrationAuthentication)
+	mr.addRoute(http.MethodDelete, "/events/:eventID/attendance", server.MiddlewareService.EventRegistrationAuthentication)
 
 	e.Use(mr.registerMiddlewares)
 
@@ -62,5 +87,5 @@ func main() {
 	if !exists {
 		e.Logger.Fatal("PORT environment variable is not set")
 	}
-	e.Logger.Fatal(e.Start(port))
+	e.Logger.Fatal(e.Start(":" + port))
 }

@@ -8,9 +8,9 @@ import (
 	"github.com/google/wire"
 	"gorm.io/gorm"
 
-	"github.com/eraxyso/go-template/handler"
-	"github.com/eraxyso/go-template/repository"
-	"github.com/eraxyso/go-template/service"
+	"traquji/handler"
+	"traquji/repository"
+	"traquji/service"
 )
 
 var (
@@ -32,8 +32,8 @@ var (
 	)
 
 	adminRepositoryBind = wire.Bind(
-		new(repository.adminRepository),
-		new(*repository.adminRepositoryImpl),
+		new(repository.AdminRepository),
+		new(*repository.AdminRepositoryImpl),
 	)
 	attendeeRepositoryBind = wire.Bind(
 		new(repository.AttendeeRepository),

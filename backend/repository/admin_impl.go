@@ -21,11 +21,12 @@ func NewAdminRepositoryImpl(db *gorm.DB) *AdminRepositoryImpl {
 }
 
 type adminModel struct {
-	EventID string `gorm:"column:event_id;type:char(36);primaryKey;not null" json:"event_id"`
-	TraqID  string `gorm:"column:traq_id;type:varchar(32);primaryKey;not null" json:"traq_id"`
+	EventID string `gorm:"column:event_id;type:char(36);primaryKey;not null"`
+	TraqID  string `gorm:"column:traq_id;type:varchar(32);primaryKey;not null"`
+}
 
-	// Association
-	Event eventModel `gorm:"foreignKey:EventID;references:EventID" json:"event,omitempty"`
+func (adminModel) TableName() string {
+	return "admins"
 }
 
 func (ar *AdminRepositoryImpl) InsertAdmins(ctx context.Context, eventID uuid.UUID, userIDs []string) error {
@@ -57,4 +58,14 @@ func (ar *AdminRepositoryImpl) UpdateAdmins(ctx context.Context, eventID uuid.UU
 		return fmt.Errorf("insert admins (repository): %w", err)
 	}
 	return nil
+}
+
+func (ar *AdminRepositoryImpl) CheckAdmin(ctx context.Context, eventID uuid.UUID, userID string) (bool, error) {
+	var count int64
+	if err := ar.db.WithContext(ctx).Model(&adminModel{}).
+		Where("event_id = ? AND traq_id = ?", eventID.String(), userID).
+		Count(&count).Error; err != nil {
+		return false, fmt.Errorf("check admin (repository): %w", err)
+	}
+	return count > 0, nil
 }

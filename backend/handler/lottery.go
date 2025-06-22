@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/eraxyso/go-template/api"
-	"github.com/eraxyso/go-template/service"
+	"traquji/api"
+	"traquji/service"
+
 	"github.com/labstack/echo/v4"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
@@ -57,8 +58,19 @@ func (h *Handler) GetLotteries(ctx echo.Context, eventID openapi_types.UUID, par
 type GetLotteryJSONResponseBody api.Lottery
 
 func (h *Handler) GetLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error {
-	// TODO: Implement GetLottery
-	return ctx.NoContent(http.StatusNotImplemented)
+	lottery, err := h.LotteryService.GetLottery(ctx.Request().Context(), eventID, lotteryID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("get lottery (handler): %w", err))
+	}
+	return ctx.JSON(http.StatusOK, GetLotteryJSONResponseBody{
+		LotteryId: lottery.LotteryID,
+		EventId:   lottery.EventID,
+		Title:     lottery.Title,
+		IsDeleted: lottery.IsDeleted,
+		CreatedAt: lottery.CreatedAt,
+		UpdatedAt: lottery.UpdatedAt,
+		Winners:   lottery.Winners,
+	})
 }
 
 func (h *Handler) DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error {
@@ -69,7 +81,16 @@ func (h *Handler) DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lo
 	return ctx.NoContent(http.StatusNoContent)
 }
 
+type RollLotteryJSONResponseBody struct {
+	Winner string `json:"winner"`
+}
+
 func (h *Handler) RollLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID, params api.RollLotteryParams) error {
-	// TODO: Implement RollLottery
-	return ctx.NoContent(http.StatusNotImplemented)
+	winner, err := h.LotteryService.RollLottery(ctx.Request().Context(), eventID, lotteryID, params.IfDuplicated)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("roll lottery (handler): %w", err))
+	}
+	return ctx.JSON(http.StatusOK, RollLotteryJSONResponseBody{
+		Winner: winner,
+	})
 }

@@ -19,21 +19,21 @@ export const handlers = [
         description: 'Description for Event 2',
         date: '2023-10-01',
         is_open: true,
+        feat/event-list
         is_me_attendee: true,
         admins: ['ten_ten'],
       },
     ])
   }),
-  // http.post('/events', () => {
-  //   return HttpResponse.json([
-  //     {
-  //       event_id: '1234',
-  //       title: 'Event 1',
-  //       description: 'Description for Event 1',
-  //       date: '2023-10-01',
-  //       is_open: true,
-  //       is_me_admin: false,
-  //     }
-  //   ])
-  // })
+  http.get('/events/{eventID}/lotteries/{lotteryID}', () => {
+    return HttpResponse.json({
+      lottery_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      event_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      title: '焼肉食べ放題',
+      is_deleted: false,
+      created_at: '2025-06-21T06:06:28.642Z',
+      updated_at: '2025-06-21T06:06:28.642Z',
+      winners: ['miyamon', 'ogu_kazemiya', 'ten_ten'],
+    })
+  }),
 ]
