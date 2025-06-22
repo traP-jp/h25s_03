@@ -47,3 +47,27 @@ func (wr *WinnerRepositoryImpl) InsertWinner(ctx context.Context, winner Winner)
 	}
 	return nil
 }
+
+func (wr *WinnerRepositoryImpl) GetEventWinners(ctx context.Context, eventID uuid.UUID) ([]string, error) {
+	var winners []string
+	err := wr.db.WithContext(ctx).
+		Model(&winnerModel{}).
+		Where("event_id = ?", eventID).
+		Pluck("traq_id", &winners).Error
+	if err != nil {
+		return nil, fmt.Errorf("get event winners (repository): %w", err)
+	}
+	return winners, nil
+}
+
+func (wr *WinnerRepositoryImpl) GetLotteryWinnners(ctx context.Context, lotteryID uuid.UUID) ([]string, error) {
+	var winners []string
+	err := wr.db.WithContext(ctx).
+		Model(&winnerModel{}).
+		Where("lottery_id = ?", lotteryID).
+		Pluck("traq_id", &winners).Error
+	if err != nil {
+		return nil, fmt.Errorf("get lottery winners: %w", err)
+	}
+	return winners, nil
+}
