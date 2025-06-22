@@ -48,13 +48,14 @@ func main() {
 	}
 
 	config := &sql_mysql.Config{
-		User:      dbUser,
-		Passwd:    dbPassword,
-		Net:       "tcp",
-		Addr:      dbHost + ":" + dbPort,
-		DBName:    dbName,
-		ParseTime: true,
-		Loc:       time.Local,
+		User:                 dbUser,
+		Passwd:               dbPassword,
+		Net:                  "tcp",
+		Addr:                 dbHost + ":" + dbPort,
+		DBName:               dbName,
+		AllowNativePasswords: true,
+		ParseTime:            true,
+		Loc:                  time.Local,
 	}
 	db, err := gorm.Open(mysql.Open(config.FormatDSN()), &gorm.Config{})
 	if err != nil {
