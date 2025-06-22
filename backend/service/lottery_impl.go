@@ -11,13 +11,15 @@ import (
 
 type LotteryServiceImpl struct {
 	lotteryRepository repository.LotteryRepository
+	winnerRepository  repository.WinnerRepository
 }
 
 var _ LotteryService = &LotteryServiceImpl{}
 
-func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository) *LotteryServiceImpl {
+func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository, winnerRepository repository.WinnerRepository) *LotteryServiceImpl {
 	return &LotteryServiceImpl{
 		lotteryRepository: lotteryRepository,
+		winnerRepository:  winnerRepository,
 	}
 }
 
