@@ -19,10 +19,7 @@ services:
     build:
       context: ./frontend
     ports:
-      - '3000:3000'
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - '9999:80'
     environment:
       - SERVER_ORIGIN=backend:8080
     depends_on:

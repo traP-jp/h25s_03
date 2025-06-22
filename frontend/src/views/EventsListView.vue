@@ -317,7 +317,7 @@ const computed = vueComputed
 const dialog = shallowRef(false)
 
 const selectedManagers = ref([])
-const userList = ['ogu_kazemiya', 'miyamon', 'ten_ten']
+const userList = ['ogu_kazemiya', 'miyamon', 'ten_ten', 'cp20', 'Eraxyso', 'Naph1', 'hachimitsu']
 
 const my_id = ref('')
 

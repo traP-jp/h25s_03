@@ -94,11 +94,11 @@ func (er *EventRepositoryImpl) GetEvents(ctx context.Context, ifDeleted bool) ([
 		if err != nil {
 			return nil, fmt.Errorf("parse event id (repository): %w", err)
 		}
-		var admins []string
+		admins := make([]string, 0, len(event.Admins))
 		for _, admin := range event.Admins {
 			admins = append(admins, admin.TraqID)
 		}
-		var attendees []string
+		attendees := make([]string, 0, len(event.Attendees))
 		for _, attendee := range event.Attendees {
 			attendees = append(attendees, attendee.TraqID)
 		}
@@ -127,7 +127,11 @@ func (er *EventRepositoryImpl) GetEvent(ctx context.Context, eventID uuid.UUID) 
 	if err != nil {
 		return EventWithAdminsAndAttendees{}, fmt.Errorf("parse event id (repository): %w", err)
 	}
-	var admins, attendees []string
+	attendees := make([]string, 0, len(event.Attendees))
+	for _, attendee := range event.Attendees {
+		attendees = append(attendees, attendee.TraqID)
+	}
+	admins := make([]string, 0, len(event.Admins))
 	for _, admin := range event.Admins {
 		admins = append(admins, admin.TraqID)
 	}

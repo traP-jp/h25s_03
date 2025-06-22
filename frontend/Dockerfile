@@ -8,6 +8,7 @@ RUN bun install
 
 COPY . .
 
+ARG VITE_API_BASE_URL="/api"
 RUN bun run build-only
 
 FROM caddy:latest AS client

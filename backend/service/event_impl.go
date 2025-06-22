@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"slices"
 	"time"
 
 	"traquji/repository"
@@ -47,13 +48,17 @@ func (es *EventServiceImpl) CreateEvent(ctx context.Context, event EventOnCreate
 	if err != nil {
 		return uuid.Nil, fmt.Errorf("insert event (service): %w", err)
 	}
-	err = es.adminRepository.InsertAdmins(ctx, eventID, event.Admins)
-	if err != nil {
-		return uuid.Nil, fmt.Errorf("insert admins (service): %w", err)
+	if len(event.Admins) > 0 {
+		err = es.adminRepository.InsertAdmins(ctx, eventID, event.Admins)
+		if err != nil {
+			return uuid.Nil, fmt.Errorf("insert admins (service): %w", err)
+		}
 	}
-	err = es.attendeeRepository.InsertAttendees(ctx, eventID, event.Attendees)
-	if err != nil {
-		return uuid.Nil, fmt.Errorf("insert attendees (service): %w", err)
+	if len(event.Attendees) > 0 {
+		err = es.attendeeRepository.InsertAttendees(ctx, eventID, event.Attendees)
+		if err != nil {
+			return uuid.Nil, fmt.Errorf("insert attendees (service): %w", err)
+		}
 	}
 	return eventID, nil
 }
@@ -118,11 +123,8 @@ func (es *EventServiceImpl) GetEvent(ctx context.Context, eventID uuid.UUID, use
 	}
 	isMeAttendee := false
 	if userID != "" {
-		for _, attendee := range event.Attendees {
-			if attendee == userID {
-				isMeAttendee = true
-				break
-			}
+		if slices.Contains(event.Attendees, userID) {
+			isMeAttendee = true
 		}
 	}
 	detail := EventDetail{
