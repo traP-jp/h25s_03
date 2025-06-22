@@ -294,8 +294,8 @@
         </template>
 
         <template v-slot:[`item.admins`]="{ item }">
-          <div v-for="admin in item.admins" :key="admin" class="d-flex align-center mr-2">
-            <v-avatar size="24">
+          <div class="d-flex align-center mr-2">
+            <v-avatar size="24" v-for="admin in item.admins" :key="admin">
               <v-img :alt="admin" :src="`https://q.trap.jp/api/v3/public/icon/${admin}`"></v-img>
             </v-avatar>
           </div>
