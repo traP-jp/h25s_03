@@ -1,17 +1,15 @@
 package service
 
 import (
-	"github.com/eraxyso/go-template/api"
-	"github.com/eraxyso/go-template/repository"
+	"context"
+
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 type EventService interface {
-	CreateEvent(ctx echo.Context, event api.PostEventsJSONRequestBody) error
-	GetEventsSummary(ctx echo.Context, isDelete bool) ([]api.EventSummary, error)
-	DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error
-	GetEvent(ctx echo.Context, eventID uuid.UUID) (repository.SelectEvent, error)
-	EditEvent(ctx echo.Context, eventID openapi_types.UUID, requestBody api.PatchEventJSONRequestBody) error
+	CreateEvent(ctx context.Context, newEvent EventOnCreate) (uuid.UUID, error)
+	GetEvents(ctx context.Context, ifDeleted bool, userID string) ([]EventSummary, error)
+	GetEvent(ctx context.Context, eventID uuid.UUID, userID string) (EventDetail, error)
+	EditEvent(ctx context.Context, eventID uuid.UUID, event EventOnEdit) error
+	DeleteEvent(ctx context.Context, eventID uuid.UUID) error
 }

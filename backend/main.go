@@ -22,25 +22,25 @@ func main() {
 	}
 	e.Use(OapiValidator.OapiRequestValidator(swagger))
 
-	dbUser, exists := os.LookupEnv("DB_USER")
+	dbUser, exists := os.LookupEnv("NS_MARIADB_USER")
 	if !exists {
-		e.Logger.Fatal("DB_USER environment variable is not set")
+		e.Logger.Fatal("NS_MARIADB_USER environment variable is not set")
 	}
-	dbPassword, exists := os.LookupEnv("DB_PASSWORD")
+	dbPassword, exists := os.LookupEnv("NS_MARIADB_PASSWORD")
 	if !exists {
-		e.Logger.Fatal("DB_PASSWORD environment variable is not set")
+		e.Logger.Fatal("NS_MARIADB_PASSWORD environment variable is not set")
 	}
-	dbHost, exists := os.LookupEnv("DB_HOST")
+	dbHost, exists := os.LookupEnv("NS_MARIADB_HOSTNAME")
 	if !exists {
-		e.Logger.Fatal("DB_HOST environment variable is not set")
+		e.Logger.Fatal("NS_MARIADB_HOSTNAME environment variable is not set")
 	}
-	dbPort, exists := os.LookupEnv("DB_PORT")
+	dbPort, exists := os.LookupEnv("NS_MARIADB_PORT")
 	if !exists {
-		e.Logger.Fatal("DB_PORT environment variable is not set")
+		e.Logger.Fatal("NS_MARIADB_PORT environment variable is not set")
 	}
-	dbName, exists := os.LookupEnv("DB_NAME")
+	dbName, exists := os.LookupEnv("NS_MARIADB_DATABASE")
 	if !exists {
-		e.Logger.Fatal("DB_NAME environment variable is not set")
+		e.Logger.Fatal("NS_MARIADB_DATABASE environment variable is not set")
 	}
 	dsn := dbUser + ":" + dbPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})

@@ -14,42 +14,42 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-
+	// イベントの一覧を取得します
 	// (GET /events)
 	GetEvents(ctx echo.Context, params GetEventsParams) error
-
+	// 新しいイベントを作成します
 	// (POST /events)
-	PostEvents(ctx echo.Context) error
-
+	PostEvent(ctx echo.Context) error
+	// 指定したイベントを削除します
 	// (DELETE /events/{eventID})
 	DeleteEvent(ctx echo.Context, eventID openapi_types.UUID) error
-
+	// 指定したイベントの詳細を取得します
 	// (GET /events/{eventID})
 	GetEvent(ctx echo.Context, eventID openapi_types.UUID) error
-
+	// 指定したイベントの情報を更新します
 	// (PATCH /events/{eventID})
 	PatchEvent(ctx echo.Context, eventID openapi_types.UUID) error
-
+	// 指定したイベントの出席登録をキャンセルします
 	// (DELETE /events/{eventID}/attendance)
 	DeleteAttendance(ctx echo.Context, eventID openapi_types.UUID) error
-
+	// 指定したイベントに出席登録を行います
 	// (POST /events/{eventID}/attendance)
 	PostAttendance(ctx echo.Context, eventID openapi_types.UUID) error
-
+	// 指定したイベントの抽選の一覧を取得します
 	// (GET /events/{eventID}/lotteries)
 	GetLotteries(ctx echo.Context, eventID openapi_types.UUID, params GetLotteriesParams) error
-
+	// 指定したイベントに対して新しい抽選を作成します
 	// (POST /events/{eventID}/lotteries)
-	PostLotteries(ctx echo.Context, eventID openapi_types.UUID) error
-
+	PostLottery(ctx echo.Context, eventID openapi_types.UUID) error
+	// 指定した抽選を削除します
 	// (DELETE /events/{eventID}/lotteries/{lotteryID})
 	DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error
-
+	// 指定した抽選の詳細を取得します
 	// (GET /events/{eventID}/lotteries/{lotteryID})
 	GetLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error
-
+	// 指定した抽選を実行し、当選者を決定します
 	// (POST /events/{eventID}/lotteries/{lotteryID})
-	PostLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID, params PostLotteryParams) error
+	RollLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID, params RollLotteryParams) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -75,12 +75,12 @@ func (w *ServerInterfaceWrapper) GetEvents(ctx echo.Context) error {
 	return err
 }
 
-// PostEvents converts echo context to params.
-func (w *ServerInterfaceWrapper) PostEvents(ctx echo.Context) error {
+// PostEvent converts echo context to params.
+func (w *ServerInterfaceWrapper) PostEvent(ctx echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostEvents(ctx)
+	err = w.Handler.PostEvent(ctx)
 	return err
 }
 
@@ -189,8 +189,8 @@ func (w *ServerInterfaceWrapper) GetLotteries(ctx echo.Context) error {
 	return err
 }
 
-// PostLotteries converts echo context to params.
-func (w *ServerInterfaceWrapper) PostLotteries(ctx echo.Context) error {
+// PostLottery converts echo context to params.
+func (w *ServerInterfaceWrapper) PostLottery(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "eventID" -------------
 	var eventID openapi_types.UUID
@@ -201,7 +201,7 @@ func (w *ServerInterfaceWrapper) PostLotteries(ctx echo.Context) error {
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostLotteries(ctx, eventID)
+	err = w.Handler.PostLottery(ctx, eventID)
 	return err
 }
 
@@ -253,8 +253,8 @@ func (w *ServerInterfaceWrapper) GetLottery(ctx echo.Context) error {
 	return err
 }
 
-// PostLottery converts echo context to params.
-func (w *ServerInterfaceWrapper) PostLottery(ctx echo.Context) error {
+// RollLottery converts echo context to params.
+func (w *ServerInterfaceWrapper) RollLottery(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "eventID" -------------
 	var eventID openapi_types.UUID
@@ -273,7 +273,7 @@ func (w *ServerInterfaceWrapper) PostLottery(ctx echo.Context) error {
 	}
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params PostLotteryParams
+	var params RollLotteryParams
 	// ------------- Required query parameter "ifDuplicated" -------------
 
 	err = runtime.BindQueryParameter("form", true, true, "ifDuplicated", ctx.QueryParams(), &params.IfDuplicated)
@@ -282,7 +282,7 @@ func (w *ServerInterfaceWrapper) PostLottery(ctx echo.Context) error {
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostLottery(ctx, eventID, lotteryID, params)
+	err = w.Handler.RollLottery(ctx, eventID, lotteryID, params)
 	return err
 }
 
@@ -315,16 +315,16 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	}
 
 	router.GET(baseURL+"/events", wrapper.GetEvents)
-	router.POST(baseURL+"/events", wrapper.PostEvents)
+	router.POST(baseURL+"/events", wrapper.PostEvent)
 	router.DELETE(baseURL+"/events/:eventID", wrapper.DeleteEvent)
 	router.GET(baseURL+"/events/:eventID", wrapper.GetEvent)
 	router.PATCH(baseURL+"/events/:eventID", wrapper.PatchEvent)
 	router.DELETE(baseURL+"/events/:eventID/attendance", wrapper.DeleteAttendance)
 	router.POST(baseURL+"/events/:eventID/attendance", wrapper.PostAttendance)
 	router.GET(baseURL+"/events/:eventID/lotteries", wrapper.GetLotteries)
-	router.POST(baseURL+"/events/:eventID/lotteries", wrapper.PostLotteries)
+	router.POST(baseURL+"/events/:eventID/lotteries", wrapper.PostLottery)
 	router.DELETE(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.DeleteLottery)
 	router.GET(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.GetLottery)
-	router.POST(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.PostLottery)
+	router.POST(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.RollLottery)
 
 }
