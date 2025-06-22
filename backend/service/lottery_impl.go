@@ -71,6 +71,23 @@ func (ls *LotteryServiceImpl) GetLotteries(ctx context.Context, eventID uuid.UUI
 	return lotteriesResult, nil
 }
 
+func (ls *LotteryServiceImpl) GetLottery(ctx context.Context, eventID uuid.UUID, lotteryID uuid.UUID) (Lottery, error) {
+	lottery, err := ls.lotteryRepository.GetLottery(ctx, eventID, lotteryID)
+	if err != nil {
+		return Lottery{}, fmt.Errorf("get lottery (service): %w", err)
+	}
+	foundLottery := Lottery{
+		LotteryID: lottery.LotteryID,
+		EventID:   lottery.EventID,
+		Title:     lottery.Title,
+		IsDeleted: lottery.IsDeleted,
+		CreatedAt: lottery.CreatedAt,
+		UpdatedAt: lottery.UpdatedAt,
+		Winners:   lottery.Winners,
+	}
+	return foundLottery, nil
+}
+
 func (ls *LotteryServiceImpl) DeleteLottery(ctx context.Context, eventID uuid.UUID, lotteryID uuid.UUID) error {
 	err := ls.lotteryRepository.DeleteLottery(ctx, lotteryID)
 	if err != nil {
