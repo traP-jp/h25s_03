@@ -1,7 +1,16 @@
 <template>
-  <v-container>
-    {ページタイトル}
-
+  <v-app>
+    <v-container>
+     <v-app-bar app fixed>
+  <div>抽選サイト</div>
+  <v-spacer></v-spacer>
+  <div><v-avatar size="24">
+              <v-img :alt="my_id" :src="`https://q.trap.jp/api/v3/public/icon/${my_id}`"></v-img>
+            </v-avatar>
+          {{ my_id }}</div>
+</v-app-bar>
+    <v-main>
+    
     <div class="text-h5 mb-4">
       <v-card class="mx-auto my-8" elevation="16" max-width="600">
         <!--イベント作成エリア-->
@@ -292,7 +301,9 @@
         </template>
       </v-data-table>
     </div>
+  </v-main>
   </v-container>
+  </v-app>
 </template>
 <script setup lang="ts">
 import { shallowRef } from 'vue'
@@ -441,7 +452,7 @@ const customFilter = (
     } else if (currentTabValue === 'attend_event') {
       tabResult = item.raw?.is_me_attendee === true
     } else if (currentTabValue === 'administrate_event') {
-      tabResult = item.raw?.admins ? my_id.value in item.raw?.admins : true
+      tabResult = item.raw?.admins ? item.raw?.admins.includes(my_id.value) : true
     }
 
     if (!tabResult) return false
@@ -454,7 +465,12 @@ const customFilter = (
     }
 
     if (form.managers.length > 0) {
-      // 管理者の判定ロジックが必要
+      const hasMatchingAdmin = form.managers.some(selectedManager => 
+    item.raw?.admins?.includes(selectedManager)
+  );
+  if (!hasMatchingAdmin) {
+    return false;
+  }
     }
 
     const itemDate = item.raw?.date ? new Date(item.raw?.date) : new Date()
@@ -486,12 +502,12 @@ const customFilter = (
       return false
     }
 
-    if (form.myRole === 'admin' && !(item.raw?.admins ? my_id.value in item.raw?.admins : false)) {
+    if (form.myRole === 'admin' && !(item.raw?.admins ? item.raw?.admins.includes(my_id.value) : false)) {
       return false
     }
     if (
       form.myRole === 'participant_only' && item.raw?.admins
-        ? my_id.value in item.raw?.admins
+        ? item.raw?.admins.includes(my_id.value)
         : false
     ) {
       return false
@@ -520,7 +536,7 @@ const customFilter = (
     } else if (currentTabValue === 'attend_event') {
       return item.raw?.is_me_attendee === true
     } else if (currentTabValue === 'administrate_event') {
-      return item.raw?.admins ? my_id.value in item.raw?.admins : true
+      return item.raw?.admins ? item.raw?.admins.includes(my_id.value) : true
     }
     return true
   }
@@ -533,9 +549,10 @@ const customFilter = (
   } else if (search === 'attend_event') {
     return item.raw?.is_me_attendee === true
   } else if (search === 'administrate_event') {
-    return item.raw?.admins ? my_id.value in item.raw?.admins : true
+    return item.raw?.admins ? item.raw?.admins.includes(my_id.value) : true
   }
 
   return true
 }
 </script>
+
