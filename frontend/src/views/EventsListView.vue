@@ -281,7 +281,7 @@
         </template>
 
         <template v-slot:[`item.date`]="{ item }">
-          <span v-if="new Date(item.date) >= new Date()">
+          <span v-if="new Date(item.date).setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0)">
             {{ item.date }}
           </span>
           <span v-else class="text-grey"> {{ item.date }} (終了) </span>
