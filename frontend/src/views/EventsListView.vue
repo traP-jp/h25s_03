@@ -373,7 +373,9 @@ const fetchUsers = async () => {
 
 const addEvent = async () => {
   if (newEvent.value == undefined) return
+  console.log('Adding event:', newEvent.value)
   await apiClient.POST('/events', { body: newEvent.value })
+  console.log('Event added successfully')
 }
 
 onMounted(() => {
