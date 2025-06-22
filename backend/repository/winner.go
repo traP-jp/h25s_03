@@ -1,10 +1,13 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type WinnerRepository interface {
-	InsertWinner(ctx echo.Context, eventID uuid.UUID, lotteryID uuid.UUID, userID string) error
+	InsertWinner(ctx context.Context, winner Winner) error
+	GetEventWinners(ctx context.Context, eventID uuid.UUID)([]string,error)
+	GetLotteryWinnners(ctx context.Context, lotteryID uuid.UUID)([]string,error)
 }

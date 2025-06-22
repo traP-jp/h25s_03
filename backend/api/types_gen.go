@@ -35,6 +35,16 @@ type EventBase struct {
 	Title        string             `json:"title"`
 }
 
+// EventOnUpdate defines model for EventOnUpdate.
+type EventOnUpdate struct {
+	Admins      []string           `json:"admins"`
+	Attendees   []string           `json:"attendees"`
+	Date        openapi_types.Date `json:"date"`
+	Description string             `json:"description"`
+	IsOpen      bool               `json:"is_open"`
+	Title       string             `json:"title"`
+}
+
 // EventSummary defines model for EventSummary.
 type EventSummary struct {
 	Admins       []string           `json:"admins"`
@@ -59,32 +69,32 @@ type Lottery struct {
 
 // GetEventsParams defines parameters for GetEvents.
 type GetEventsParams struct {
-	// IfDeleted If include the deleted events
+	// IfDeleted このパラメータが true の場合、削除済みのイベントも含めて取得します
 	IfDeleted bool `form:"ifDeleted" json:"ifDeleted"`
 }
 
 // GetLotteriesParams defines parameters for GetLotteries.
 type GetLotteriesParams struct {
-	// IfDeleted If include the deleted lotteries
+	// IfDeleted このパラメータが true の場合、削除済みの抽選も含めて取得します
 	IfDeleted bool `form:"ifDeleted" json:"ifDeleted"`
 }
 
-// PostLotteriesJSONBody defines parameters for PostLotteries.
-type PostLotteriesJSONBody struct {
+// PostLotteryJSONBody defines parameters for PostLottery.
+type PostLotteryJSONBody struct {
 	Title string `json:"title"`
 }
 
-// PostLotteryParams defines parameters for PostLottery.
-type PostLotteryParams struct {
-	// IfDuplicated If allow duplicated winning in the same event
+// RollLotteryParams defines parameters for RollLottery.
+type RollLotteryParams struct {
+	// IfDuplicated このパラメータが true の場合、同一イベント内での重複当選を許可します (false の場合も同一抽選内では重複当選は許可されません)
 	IfDuplicated bool `form:"ifDuplicated" json:"ifDuplicated"`
 }
 
-// PostEventsJSONRequestBody defines body for PostEvents for application/json ContentType.
-type PostEventsJSONRequestBody = EventBase
+// PostEventJSONRequestBody defines body for PostEvent for application/json ContentType.
+type PostEventJSONRequestBody = EventBase
 
 // PatchEventJSONRequestBody defines body for PatchEvent for application/json ContentType.
-type PatchEventJSONRequestBody = EventBase
+type PatchEventJSONRequestBody = EventOnUpdate
 
-// PostLotteriesJSONRequestBody defines body for PostLotteries for application/json ContentType.
-type PostLotteriesJSONRequestBody PostLotteriesJSONBody
+// PostLotteryJSONRequestBody defines body for PostLottery for application/json ContentType.
+type PostLotteryJSONRequestBody PostLotteryJSONBody

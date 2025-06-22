@@ -1,13 +1,14 @@
 package repository
 
 import (
-	"github.com/eraxyso/go-template/api"
+	"context"
+
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type LotteryRepository interface {
-	InsertLottery(ctx echo.Context, eventID uuid.UUID, lottery api.PostLotteriesJSONRequestBody) (uuid.UUID, error)
-	GetLotteries(ctx echo.Context, eventID uuid.UUID, ifDeleted bool) ([]api.Lottery, error)
-	DeleteLottery(ctx echo.Context, lotteryID uuid.UUID) error
+	InsertLottery(ctx context.Context, eventID uuid.UUID, lottery LotteryOnCreate) (uuid.UUID, error)
+	GetLotteries(ctx context.Context, eventID uuid.UUID, ifDeleted bool) ([]LotteryWithWinners, error)
+	GetLottery(ctx context.Context, eventID uuid.UUID, lotteryID uuid.UUID) (LotteryWithWinners, error)
+	DeleteLottery(ctx context.Context, lotteryID uuid.UUID) error
 }

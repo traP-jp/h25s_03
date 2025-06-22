@@ -1,0 +1,42 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+    environment:
+      - NS_MARIADB_HOSTNAME=db
+      - NS_MARIADB_PORT=3306
+      - NS_MARIADB_USER=root
+      - NS_MARIADB_PASSWORD=password
+      - NS_MARIADB_DATABASE=app
+      - PORT=8080
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - SERVER_ORIGIN=backend:8080
+    depends_on:
+      - backend
+    restart: always
+
+  db:
+    image: mariadb:latest
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=app
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
