@@ -7,11 +7,11 @@
 package main
 
 import (
-	"github.com/eraxyso/go-template/handler"
-	"github.com/eraxyso/go-template/repository"
-	"github.com/eraxyso/go-template/service"
 	"github.com/google/wire"
 	"gorm.io/gorm"
+	"traquji/handler"
+	"traquji/repository"
+	"traquji/service"
 )
 
 // Injectors from wire.go:

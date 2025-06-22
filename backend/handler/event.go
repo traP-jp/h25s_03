@@ -6,8 +6,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/eraxyso/go-template/api"
-	"github.com/eraxyso/go-template/service"
+	"traquji/api"
+	"traquji/service"
+
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 

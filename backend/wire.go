@@ -8,9 +8,9 @@ import (
 	"github.com/google/wire"
 	"gorm.io/gorm"
 
-	"github.com/eraxyso/go-template/handler"
-	"github.com/eraxyso/go-template/repository"
-	"github.com/eraxyso/go-template/service"
+	"traquji/handler"
+	"traquji/repository"
+	"traquji/service"
 )
 
 var (
