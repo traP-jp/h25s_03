@@ -331,7 +331,7 @@ const newEvent = ref<components['schemas']['EventBase']>({
   date: '',
   is_open: true,
   is_me_attendee: true,
-  admins: [my_id.value],
+  admins: [],
   attendees: [],
 })
 
@@ -394,6 +394,7 @@ onMounted(async () => {
     ).data ?? []
 
   my_id.value = (await apiClient.GET('/users/me')).data?.name ?? ''
+  newEvent.value.admins = [my_id.value]
 })
 
 const currentTab = ref('all_event')
