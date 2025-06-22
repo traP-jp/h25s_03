@@ -129,7 +129,11 @@ func (ls *LotteryServiceImpl) RollLottery(ctx context.Context, eventID uuid.UUID
 	}
 	winner := pool[rand.IntN(len(pool))]
 
-	err = ls.winnerRepository.InsertWinner(ctx, repository.Winner{})
+	err = ls.winnerRepository.InsertWinner(ctx, repository.Winner{
+		EventID:   eventID,
+		LotteryID: lotteryID,
+		TraqID:    winner,
+	})
 	if err != nil {
 		return "", fmt.Errorf("insert winner (service): %w", err)
 	}
