@@ -50,6 +50,9 @@ type ServerInterface interface {
 	// 指定した抽選を実行し、当選者を決定します
 	// (POST /events/{eventID}/lotteries/{lotteryID})
 	RollLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID, params RollLotteryParams) error
+	// 自分のtraQ IDを取得します
+	// (GET /users/me)
+	GetMe(ctx echo.Context) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -286,6 +289,15 @@ func (w *ServerInterfaceWrapper) RollLottery(ctx echo.Context) error {
 	return err
 }
 
+// GetMe converts echo context to params.
+func (w *ServerInterfaceWrapper) GetMe(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetMe(ctx)
+	return err
+}
+
 // This is a simple interface which specifies echo.Route addition functions which
 // are present on both echo.Echo and echo.Group, since we want to allow using
 // either of them for path registration
@@ -326,5 +338,6 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.DELETE(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.DeleteLottery)
 	router.GET(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.GetLottery)
 	router.POST(baseURL+"/events/:eventID/lotteries/:lotteryID", wrapper.RollLottery)
+	router.GET(baseURL+"/users/me", wrapper.GetMe)
 
 }
