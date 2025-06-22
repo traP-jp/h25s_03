@@ -21,6 +21,8 @@ func NewMiddlewareServiceImpl(adminRepository repository.AdminRepository, eventR
 	}
 }
 
+var _ MiddlewareService = &MiddlewareServiceImpl{}
+
 func (ms *MiddlewareServiceImpl) GetUserID(ctx echo.Context) string {
 	userID := ctx.Request().Header.Get("X-Forwarded-User")
 	if userID == "" {

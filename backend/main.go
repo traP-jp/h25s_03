@@ -2,12 +2,13 @@ package main
 
 import (
 	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/eraxyso/go-template/api"
+	"github.com/eraxyso/go-template/repository"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	OapiValidator "github.com/oapi-codegen/echo-middleware"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -17,11 +18,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	swagger, err := api.GetSwagger()
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
-	e.Use(OapiValidator.OapiRequestValidator(swagger))
+	// FIXME: バリデーションが正常なものも弾いてしまうのでコメントアウト
+	// swagger, err := api.GetSwagger()
+	// if err != nil {
+	// 	e.Logger.Fatal(err)
+	// }
+	// e.Use(OapiValidator.OapiRequestValidator(swagger))
 
 	dbUser, exists := os.LookupEnv("NS_MARIADB_USER")
 	if !exists {
@@ -43,10 +45,16 @@ func main() {
 	if !exists {
 		e.Logger.Fatal("NS_MARIADB_DATABASE environment variable is not set")
 	}
-	dsn := dbUser + ":" + dbPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
+
+	escapedPassword := url.QueryEscape(dbPassword)
+	dsn := dbUser + ":" + escapedPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		e.Logger.Fatal("Failed to connect to database:", err)
+	}
+	err = repository.Migrate(db)
+	if err != nil {
+		e.Logger.Fatal("Failed to migrate database:", err)
 	}
 	server := InitializeServer(db)
 
@@ -69,5 +77,5 @@ func main() {
 	if !exists {
 		e.Logger.Fatal("PORT environment variable is not set")
 	}
-	e.Logger.Fatal(e.Start(port))
+	e.Logger.Fatal(e.Start(":" + port))
 }

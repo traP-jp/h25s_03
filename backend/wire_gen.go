@@ -17,15 +17,15 @@ import (
 // Injectors from wire.go:
 
 func InitializeServer(db *gorm.DB) *handler.Handler {
-	middlewareServiceImpl := service.NewMiddlewareServiceImpl()
-	eventRepositoryImpl := repository.NewEventRepositoryImpl(db)
 	adminRepositoryImpl := repository.NewAdminRepositoryImpl(db)
+	eventRepositoryImpl := repository.NewEventRepositoryImpl(db)
+	middlewareServiceImpl := service.NewMiddlewareServiceImpl(adminRepositoryImpl, eventRepositoryImpl)
 	attendeeRepositoryImpl := repository.NewAttendeeRepositoryImpl(db)
 	eventServiceImpl := service.NewEventServiceImpl(eventRepositoryImpl, adminRepositoryImpl, attendeeRepositoryImpl)
 	attendanceServiceImpl := service.NewAttendanceServiceImpl(attendeeRepositoryImpl)
 	lotteryRepositoryImpl := repository.NewLotteryRepositoryImpl(db)
 	winnerRepositoryImpl := repository.NewWinnerRepositoryImpl(db)
-	lotteryServiceImpl := service.NewLotteryServiceImpl(lotteryRepositoryImpl, winnerRepositoryImpl)
+	lotteryServiceImpl := service.NewLotteryServiceImpl(lotteryRepositoryImpl, attendeeRepositoryImpl, winnerRepositoryImpl)
 	handlerHandler := handler.NewHandler(middlewareServiceImpl, eventServiceImpl, attendanceServiceImpl, lotteryServiceImpl)
 	return handlerHandler
 }
