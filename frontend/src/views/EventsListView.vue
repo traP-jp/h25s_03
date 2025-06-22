@@ -1,6 +1,7 @@
 <template>
   <v-container>
     {ページタイトル}
+    
     <div class="text-h5 mb-4">
       <v-card class="mx-auto my-8" elevation="16" max-width="600">
         <!--イベント作成エリア-->
@@ -254,45 +255,41 @@
         :search="tableSearch"
         :custom-filter="customFilter"
       >
-        <template v-slot:item.title="{ item }">
+        <template v-slot:[`item.title`]="{ item }">
           <router-link :to="`/${item.event_id}`" class="blue--text text-decoration-underline">
             {{ item.title }}
           </router-link>
         </template>
 
-        <template v-slot:item.is_me_attendee="{ item }">
+        <template v-slot:[`item.is_me_attendee`]="{ item }">
           <v-chip v-if="item.is_me_attendee" color="green" variant="outlined"> 参加済み </v-chip>
           <v-chip v-else color="orange" variant="outlined"> 未参加 </v-chip>
         </template>
 
-        <template v-slot:item.is_open="{ item }">
+        <template v-slot:[`item.is_open`]="{ item }">
           <v-chip v-if="item.is_open" color="green" variant="outlined"> 自由参加 </v-chip>
           <v-chip v-else color="orange" variant="outlined"> 承認制 </v-chip>
         </template>
 
-        <template v-slot:item.date="{ item }">
+        <template v-slot:[`item.date`]="{ item }">
           <span v-if="new Date(item.date) > new Date()">
             {{ item.date }}
           </span>
           <span v-else class="text-grey"> {{ item.date }} (終了) </span>
         </template>
 
-        <template v-slot:item.user_role="{ item }">
+        <template v-slot:[`item.user_role`]="{ item }">
           <v-icon v-if="my_id in item.admins" color="primary"> mdi-crown </v-icon>
           <span v-else class="text-grey-lighten-1"> 参加者 </span>
         </template>
-        
-        <template v-slot:item.admins="{ item }">
-          <div v-for="admin in item.admins" :key="admin" class="d-flex align-center mr-2">
-    <v-avatar size="24">
-      <v-img
-        :alt="admin"
-        :src="`https://q.trap.jp/api/v3/public/icon/${admin}`"
-      ></v-img>
-    </v-avatar>
-  </div>
-        </template>
 
+        <template v-slot:[`item.admins`]="{ item }">
+          <div v-for="admin in item.admins" :key="admin" class="d-flex align-center mr-2">
+            <v-avatar size="24">
+              <v-img :alt="admin" :src="`https://q.trap.jp/api/v3/public/icon/${admin}`"></v-img>
+            </v-avatar>
+          </div>
+        </template>
       </v-data-table>
     </div>
   </v-container>
@@ -306,7 +303,6 @@ import { computed as vueComputed } from 'vue'
 const computed = vueComputed
 
 const dialog = shallowRef(false)
-const tab = ref(0)
 
 const selectedManagers = ref([])
 const userList = ['ogu_kazemiya', 'miyamon', 'ten_ten']
@@ -325,9 +321,8 @@ const newEvent = ref<components['schemas']['EventBase']>({
   is_open: true,
   is_me_attendee: true,
   admins: [],
-  attendees: []
+  attendees: [],
 })
-
 
 // イベント作成関数を追加
 const createEvent = () => {
@@ -367,7 +362,7 @@ const fetchUsers = async () => {
 
 const addEvent = async () => {
   if (newEvent.value == undefined) return
-  const response = (await apiClient.POST('/events', { body: newEvent.value })).data ?? []
+  await apiClient.POST('/events', { body: newEvent.value })
 }
 
 onMounted(() => {
@@ -414,10 +409,6 @@ const detailSearchForm = ref({
   myRole: 'all', // 'all', 'admin', 'participant_only'
 })
 
-// tabFilterを別途作成
-const tabFilter = computed(() => {
-  return currentTab.value
-})
 
 // v-data-tableのsearchプロパティを修正
 const tableSearch = computed(() => {
@@ -434,7 +425,9 @@ const tableSearch = computed(() => {
 })
 
 // customFilter関数を修正
-const customFilter = (value: any, search: string, item: any) => {
+const customFilter = (value: string, search: string, item?: { raw?: components['schemas']['EventSummary'] }) => {
+
+  if (!item?.raw) return true
   // 詳細検索が有効な場合
   if (showDetailSearch.value && search === 'detail_search') {
     // まずタブフィルターを適用
@@ -442,11 +435,11 @@ const customFilter = (value: any, search: string, item: any) => {
     const currentTabValue = currentTab.value
 
     if (currentTabValue === 'commingsoon_event') {
-      tabResult = new Date(item.raw?.date) > new Date()
+      tabResult = item.raw?.date ? new Date(item.raw.date) > new Date() : true
     } else if (currentTabValue === 'attend_event') {
       tabResult = item.raw?.is_me_attendee === true
     } else if (currentTabValue === 'administrate_event') {
-      tabResult = item.raw?.is_me_admin === true
+      tabResult = item.raw?.admins ? (my_id.value in item.raw?.admins) :true
     }
 
     if (!tabResult) return false
@@ -462,7 +455,7 @@ const customFilter = (value: any, search: string, item: any) => {
       // 管理者の判定ロジックが必要
     }
 
-    const itemDate = new Date(item.raw?.date)
+    const itemDate = item.raw?.date ? new Date(item.raw?.date) : new Date()
     if (form.dateFrom && itemDate < new Date(form.dateFrom)) {
       return false
     }
@@ -491,10 +484,10 @@ const customFilter = (value: any, search: string, item: any) => {
       return false
     }
 
-    if (form.myRole === 'admin' && !item.raw?.is_me_admin) {
+    if (form.myRole === 'admin' && !(item.raw?.admins ? (my_id.value in item.raw?.admins) :false)) {
       return false
     }
-    if (form.myRole === 'participant_only' && item.raw?.is_me_admin) {
+    if (form.myRole === 'participant_only' && item.raw?.admins ? (my_id.value in item.raw?.admins) :false) {
       return false
     }
 
@@ -517,11 +510,11 @@ const customFilter = (value: any, search: string, item: any) => {
     // タブフィルターも適用
     const currentTabValue = currentTab.value
     if (currentTabValue === 'commingsoon_event') {
-      return new Date(item.raw?.date) > new Date()
+      return item.raw?.date ? new Date(item.raw.date) > new Date() : true
     } else if (currentTabValue === 'attend_event') {
       return item.raw?.is_me_attendee === true
     } else if (currentTabValue === 'administrate_event') {
-      return item.raw?.is_me_admin === true
+      return item.raw?.admins ? (my_id.value in item.raw?.admins) :true
     }
     return true
   }
@@ -530,11 +523,11 @@ const customFilter = (value: any, search: string, item: any) => {
   if (search === 'all_event') {
     return true
   } else if (search === 'commingsoon_event') {
-    return new Date(item.raw?.date) > new Date()
+    return item.raw?.date ? new Date(item.raw.date) > new Date() : true
   } else if (search === 'attend_event') {
     return item.raw?.is_me_attendee === true
   } else if (search === 'administrate_event') {
-    return item.raw?.is_me_admin === true
+    return item.raw?.admins ? (my_id.value in item.raw?.admins) :true
   }
 
   return true
