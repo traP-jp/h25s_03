@@ -11,7 +11,6 @@ import (
 	sql_mysql "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	OapiValidator "github.com/oapi-codegen/echo-middleware"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
