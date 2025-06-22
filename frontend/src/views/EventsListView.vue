@@ -51,6 +51,7 @@
                       chips
                       closable-chips
                       required
+                      disabled
                     ></v-autocomplete>
                   </v-col>
 
@@ -331,12 +332,12 @@ const newEvent = ref<components['schemas']['EventBase']>({
   date: '',
   is_open: true,
   is_me_attendee: true,
-  admins: [],
+  admins: [my_id.value],
   attendees: [],
 })
 
 // イベント作成関数を追加
-const createEvent = () => {
+const createEvent = async () => {
   // バリデーション
   if (!newEvent.value.title || !newEvent.value.date || selectedManagers.value.length === 0) {
     // エラーハンドリング（実装は要件に応じて）
@@ -344,7 +345,7 @@ const createEvent = () => {
   }
 
   // API呼び出し処理
-  addEvent()
+  await addEvent()
 
   // フォームリセット
   newEvent.value = {
