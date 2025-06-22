@@ -3,10 +3,12 @@ info:
   title: API
   version: 0.0.0
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8080/api
     description: Local Server
-  - url: https://traquji.trap.show
+  - url: https://traquji.trap.show/api
     description: Production Server
+  - url: https://traquji.trap.show/api:8080
+    description: Production Server 2
 tags:
   - name: User
   - name: Event
