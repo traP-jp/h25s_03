@@ -5,11 +5,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/eraxyso/go-template/api"
-	"github.com/eraxyso/go-template/repository"
+	"traquji/api"
+	"traquji/repository"
+
 	sql_mysql "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	OapiValidator "github.com/oapi-codegen/echo-middleware"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -19,12 +21,11 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// FIXME: バリデーションが正常なものも弾いてしまうのでコメントアウト
-	// swagger, err := api.GetSwagger()
-	// if err != nil {
-	// 	e.Logger.Fatal(err)
-	// }
-	// e.Use(OapiValidator.OapiRequestValidator(swagger))
+	swagger, err := api.GetSwagger()
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+	e.Use(OapiValidator.OapiRequestValidator(swagger))
 
 	dbUser, exists := os.LookupEnv("NS_MARIADB_USER")
 	if !exists {

@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/eraxyso/go-template/repository"
+	"traquji/repository"
+
 	"github.com/google/uuid"
 )
 

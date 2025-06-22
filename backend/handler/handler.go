@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/eraxyso/go-template/api"
-	"github.com/eraxyso/go-template/service"
+	"traquji/api"
+	"traquji/service"
 )
 
 type Handler struct {

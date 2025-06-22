@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/eraxyso/go-template/repository"
+	"traquji/repository"
+
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
