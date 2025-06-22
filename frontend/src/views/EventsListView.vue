@@ -338,7 +338,7 @@ const newEvent = ref<components['schemas']['EventBase']>({
 // イベント作成関数を追加
 const createEvent = async () => {
   // バリデーション
-  if (!newEvent.value.title || !newEvent.value.date || selectedManagers.value.length === 0) {
+  if (!newEvent.value.title || !newEvent.value.date) {
     // エラーハンドリング（実装は要件に応じて）
     return
   }
