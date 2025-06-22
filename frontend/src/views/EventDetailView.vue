@@ -46,6 +46,12 @@ const postLottery = async () => {
   newLotteryTitle.value = ''
   isDialogActive.value = false
 }
+const registerAttendance = async () => {
+  await apiClient.POST('/events/{eventID}/attendance', {
+    params: { path: { eventID: eventId } },
+  })
+  await fetchEvent()
+}
 </script>
 
 <template>
@@ -60,6 +66,7 @@ const postLottery = async () => {
       </div>
       <span class="text-body-2 text-medium-emphasis">{{ event.date }}</span>
       <p class="text-body-1">{{ event.description }}</p>
+      <v-btn @click="registerAttendance">参加登録</v-btn>
       <div class="py-2">
         <div class="d-flex align-center ga-1">
           <h2 class="text-overline">attendees</h2>
