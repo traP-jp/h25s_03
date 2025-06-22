@@ -43,7 +43,7 @@
 
                   <v-col cols="12">
                     <v-autocomplete
-                      v-model="selectedManagers"
+                      v-model="newEvent.admins"
                       label="管理者*"
                       :items="userList"
                       variant="outlined"
