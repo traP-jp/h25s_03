@@ -12,7 +12,6 @@ export const handlers = [
         description: "Description for Event 1",
         date: "2023-10-01",
         is_open: true,
-        is_me_admin: false,
         admins: [],
         is_me_attendee: false,
       },
