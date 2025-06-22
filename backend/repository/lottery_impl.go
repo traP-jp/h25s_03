@@ -102,6 +102,38 @@ func (lr *LotteryRepositoryImpl) GetLotteries(ctx context.Context, eventID uuid.
 	return lotteriesResult, nil
 }
 
+func (ls *LotteryRepositoryImpl) GetLottery(ctx context.Context, eventID uuid.UUID, lotteryID uuid.UUID) (LotteryWithWinners, error) {
+	var lottery lotteryModel
+	err := ls.db.WithContext(ctx).Preload("Winners").Where("lottery_id = ? AND event_id = ?", lotteryID, eventID).Where("is_deleted = ?", false).First(&lottery).Error
+	if err != nil {
+		return LotteryWithWinners{}, fmt.Errorf("get lottery (repository): %w", err)
+	}
+
+	lotteryUUID, err := uuid.Parse(lottery.LotteryID)
+	if err != nil {
+		return LotteryWithWinners{}, fmt.Errorf("parse lottery id (repository): %w", err)
+	}
+	eventUUID, err := uuid.Parse(lottery.EventID)
+	if err != nil {
+		return LotteryWithWinners{}, fmt.Errorf("parse event id (repository): %w", err)
+	}
+
+	foundLottery := LotteryWithWinners{
+		LotteryID: lotteryUUID,
+		EventID:   eventUUID,
+		Title:     lottery.Title,
+		IsDeleted: lottery.IsDeleted,
+		CreatedAt: lottery.CreatedAt,
+		UpdatedAt: lottery.UpdatedAt,
+	}
+	foundLottery.Winners = make([]string, len(lottery.Winners))
+	for i, winner := range lottery.Winners {
+		foundLottery.Winners[i] = winner.TraqID
+	}
+
+	return foundLottery, nil
+}
+
 func (lr *LotteryRepositoryImpl) DeleteLottery(ctx context.Context, lotteryID uuid.UUID) error {
 	if err := lr.db.WithContext(ctx).Model(&lotteryModel{}).Where("lottery_id = ?", lotteryID).Update("is_deleted", true).Error; err != nil {
 		return fmt.Errorf("delete lottery (repository): %w", err)
