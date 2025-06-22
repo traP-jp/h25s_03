@@ -5,7 +5,7 @@ info:
 servers:
   - url: http://localhost:8080
     description: Local server
-  - url: https://traquji.trap.show/api
+  - url: https://traquji.trap.show/api:8080
     description: Production server
 tags:
   - name: User
