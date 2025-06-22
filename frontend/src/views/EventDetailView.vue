@@ -8,31 +8,43 @@ import type { components } from '@/api/schema'
 const route = useRoute()
 const eventId = route.params.eventId as string
 
-const event = ref<components['schemas']['Event'] | undefined>()
-const lotteries = ref<components['schemas']['Lottery'][] | undefined>()
+const event = ref<components['schemas']['Event']>()
+const lotteries = ref<components['schemas']['Lottery'][]>()
+const newLotteryTitle = ref<string>('')
+const isDialogActive = ref(false)
 
 const isDense = computed(() => {
-  return event.value && event.value.attendees.length > 39
+  return event.value && event.value.attendees.length > 40
 })
 
 onMounted(async () => {
-  await getEvent()
-  await getLotteries()
+  await fetchEvent()
+  await fetchLotteries()
 })
 
-const getEvent = async () => {
+const fetchEvent = async () => {
   event.value = (
     await apiClient.GET('/events/{eventID}', {
       params: { path: { eventID: eventId } },
     })
   ).data
 }
-const getLotteries = async () => {
+const fetchLotteries = async () => {
   lotteries.value = (
     await apiClient.GET('/events/{eventID}/lotteries', {
       params: { path: { eventID: eventId }, query: { ifDeleted: false } },
     })
   ).data
+}
+const postLottery = async () => {
+  if (!newLotteryTitle.value) return
+  await apiClient.POST('/events/{eventID}/lotteries', {
+    params: { path: { eventID: eventId } },
+    body: { title: newLotteryTitle.value },
+  })
+  await fetchLotteries()
+  newLotteryTitle.value = ''
+  isDialogActive.value = false
 }
 </script>
 
@@ -66,13 +78,16 @@ const getLotteries = async () => {
         <h2 class="text-overline">lottery</h2>
         <div class="">
           <v-list class="mx-0">
-            <v-list-item
-              v-for="lottery in lotteries"
-              :key="lottery.lottery_id"
-              :to="{ name: 'Lottery', params: { eventId: eventId, lotteryId: lottery.lottery_id } }"
-            >
+            <v-list-item v-for="lottery in lotteries" :key="lottery.lottery_id">
               <div class="d-flex align-end ga-4">
-                <v-list-item-title>{{ lottery.title }}</v-list-item-title>
+                <router-link
+                  :to="{
+                    name: 'Lottery',
+                    params: { eventId: eventId, lotteryId: lottery.lottery_id },
+                  }"
+                >
+                  <v-list-item-title class="">{{ lottery.title }}</v-list-item-title>
+                </router-link>
                 <div class="d-flex ga-1">
                   <user-avatar
                     v-for="winner in lottery.winners"
@@ -84,7 +99,37 @@ const getLotteries = async () => {
               </div>
             </v-list-item>
           </v-list>
-          <v-btn color="primary" density="comfortable">新規作成</v-btn>
+          <v-dialog v-model="isDialogActive" max-width="500">
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-btn
+                v-bind="activatorProps"
+                color="primary"
+                density="comfortable"
+                text="新規作成"
+              />
+            </template>
+            <template v-slot:default>
+              <v-card class="pa-2">
+                <v-card-title>抽選の作成</v-card-title>
+                <v-text-field
+                  v-model="newLotteryTitle"
+                  label="タイトル"
+                  density="comfortable"
+                  outlined
+                  hide-details
+                  class="px-4"
+                />
+                <v-card-actions>
+                  <v-btn
+                    density="comfortable"
+                    text="作成"
+                    :disabled="!newLotteryTitle"
+                    @click="postLottery"
+                  />
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
         </div>
       </div>
     </v-sheet>

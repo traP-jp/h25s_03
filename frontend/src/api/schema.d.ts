@@ -89,15 +89,24 @@ export type webhooks = Record<string, never>
 export interface components {
   schemas: {
     EventSummary: {
+      /** Format: uuid */
+      event_id: string
       title: string
-      description?: string
+      description: string
       /** Format: date */
       date: string
       is_open: boolean
       is_me_attendee: boolean
       admins: string[]
     }
-    EventBase: components['schemas']['EventSummary'] & {
+    EventBase: {
+      title: string
+      description: string
+      /** Format: date */
+      date: string
+      is_open: boolean
+      is_me_attendee: boolean
+      admins: string[]
       attendees: string[]
     }
     Event: components['schemas']['EventBase'] & {
@@ -108,9 +117,6 @@ export interface components {
       updated_at: string
       /** Format: date-time */
       created_at: string
-    }
-    EventUpdate: components['schemas']['EventBase'] & {
-      is_deleted: boolean
     }
     Lottery: {
       /** Format: uuid */
@@ -152,10 +158,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['EventSummary'] & {
-            /** Format: uuid */
-            event_id?: string
-          }
+          'application/json': components['schemas']['EventSummary'][]
         }
       }
       /** @description Internal Server Error */
@@ -268,7 +271,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['EventUpdate']
+        'application/json': components['schemas']['EventBase']
       }
     }
     responses: {
