@@ -2,11 +2,12 @@ package main
 
 import (
 	"net/http"
-	"net/url"
 	"os"
+	"time"
 
 	"github.com/eraxyso/go-template/api"
 	"github.com/eraxyso/go-template/repository"
+	sql_mysql "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/driver/mysql"
@@ -46,9 +47,16 @@ func main() {
 		e.Logger.Fatal("NS_MARIADB_DATABASE environment variable is not set")
 	}
 
-	escapedPassword := url.QueryEscape(dbPassword)
-	dsn := dbUser + ":" + escapedPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	config := &sql_mysql.Config{
+		User:      dbUser,
+		Passwd:    dbPassword,
+		Net:       "tcp",
+		Addr:      dbHost + ":" + dbPort,
+		DBName:    dbName,
+		ParseTime: true,
+		Loc:       time.Local,
+	}
+	db, err := gorm.Open(mysql.Open(config.FormatDSN()), &gorm.Config{})
 	if err != nil {
 		e.Logger.Fatal("Failed to connect to database:", err)
 	}

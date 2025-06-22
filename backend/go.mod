@@ -4,10 +4,10 @@ go 1.24.3
 
 require (
 	github.com/getkin/kin-openapi v0.132.0
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/uuid v1.5.0
 	github.com/google/wire v0.6.0
 	github.com/labstack/echo/v4 v4.13.4
-	github.com/oapi-codegen/echo-middleware v1.0.2
 	github.com/oapi-codegen/runtime v1.1.1
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.30.0
@@ -19,9 +19,7 @@ require (
 	github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936 // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
-	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/google/subcommands v1.2.0 // indirect
-	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
