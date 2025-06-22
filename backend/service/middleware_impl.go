@@ -14,8 +14,11 @@ type MiddlewareServiceImpl struct {
 	eventRepository repository.EventRepository
 }
 
-func NewMiddlewareServiceImpl() *MiddlewareServiceImpl {
-	return &MiddlewareServiceImpl{}
+func NewMiddlewareServiceImpl(adminRepository repository.AdminRepository, eventRepository repository.EventRepository) *MiddlewareServiceImpl {
+	return &MiddlewareServiceImpl{
+		adminRepository: adminRepository,
+		eventRepository: eventRepository,
+	}
 }
 
 func (ms *MiddlewareServiceImpl) GetUserID(ctx echo.Context) string {
