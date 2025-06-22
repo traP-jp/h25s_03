@@ -15,9 +15,6 @@
         イベント作成
       </v-card-title>
     </v-card-item>
-    <v-card-text>
-      イベント名を入力してください。
-    </v-card-text>
     <div class="pa-4 text-center">
     <v-dialog
       v-model="dialog"
@@ -34,89 +31,90 @@
       </template>
 
       <v-card
-        prepend-icon="mdi-account"
-        title="イベント情報入力フォーム"
-      >
-        <v-card-text>
-          <v-row dense>
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                label="イベント名*"
-                required
-              ></v-text-field>
+  prepend-icon="mdi-calendar-plus"
+  title="イベント情報入力フォーム"
+>
+  <v-card-text>
+    <v-row dense>
+      <v-col cols="12">
+        <v-text-field
+          v-model="newEvent.title"
+          label="イベント名*"
+          variant="outlined"
+          required
+        ></v-text-field>
+      </v-col>
+      
+      <v-col cols="12">
+        <v-autocomplete
+          v-model="selectedManagers"
+          label="管理者*"
+          :items="userList"
+          variant="outlined"
+          multiple
+          chips
+          closable-chips
+          required
+        ></v-autocomplete>
+      </v-col>
+      
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="newEvent.date"
+          label="開催日*"
+          type="date"
+          variant="outlined"
+          required
+        ></v-text-field>
+      </v-col>
+      
+      <v-col cols="12" md="6">
+        <v-select
+          v-model="newEvent.is_open"
+          :items="[
+            { title: '自由参加', value: true },
+            { title: '承認制', value: false }
+          ]"
+          label="参加条件*"
+          variant="outlined"
+          required
+        ></v-select>
+      </v-col>
 
-            </v-col>
-            <v-autocomplete
-              v-model="selectedManagers"
-              label="管理者*"
-              :items="userList"
-              variant="underlined"
-              multiple
-              chips
-              closable-chips
-            ></v-autocomplete>
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                label="開催日*"
-                required
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-            >
-              <v-select
-                :items="['自由参加', '招待制']"
-                label="参加条件*"
-                required
-              ></v-select>
-            </v-col>
+      <v-col cols="12">
+        <v-textarea
+          v-model="newEvent.description"
+          label="イベント概要"
+          :counter="10000"
+          rows="3"
+          variant="outlined"
+          persistent-counter
+        ></v-textarea>
+      </v-col>
+    </v-row>
+    
+    <small class="text-caption text-medium-emphasis">*は必須項目です</small>
+  </v-card-text>
 
-            <v-col
-              cols="12"
-              sm="6"
-            >
-            <div class="mb-2">イベント概要</div>
-                <v-textarea
-                  :counter="10000"
-                  class="mb-2"
-                  rows="2"
-                  variant="outlined"
-                  persistent-counter
-                ></v-textarea>
-            </v-col>
-          </v-row>
-          
-          <small class="text-caption text-medium-emphasis">*indicates required field</small>
-        </v-card-text>
+  <v-divider></v-divider>
 
-        <v-divider></v-divider>
+  <v-card-actions>
+    <v-spacer></v-spacer>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
+    <v-btn
+      text="キャンセル"
+      variant="outlined"
+      @click="dialog = false"
+    ></v-btn>
 
-          <v-btn
-            text="Close"
-            variant="plain"
-            @click="dialog = false"
-          ></v-btn>
-
-          <v-btn
-            color="primary"
-            text="Save"
-            variant="tonal"
-            @click="dialog = false"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
+    <v-btn
+      color="primary"
+      text="作成"
+      variant="elevated"
+      @click="createEvent"
+    ></v-btn>
+  </v-card-actions>
+</v-card>
     </v-dialog>
   </div>
     </v-card>
@@ -124,90 +122,146 @@
     <!--イベント一覧テーブル-->
     イベント一覧
     検索
-    <v-card
-        prepend-icon="mdi-account"
-        title="詳細検索"
+
+<!-- 検索エリアを追加（イベント一覧の前に） -->
+<div class="mb-4">
+  <v-row align="center">
+    <v-col cols="12" md="8">
+      <v-text-field
+        v-model="searchText"
+        label="イベント名で検索"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        clearable
+        hide-details
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" md="4">
+      <v-btn
+        :variant="showDetailSearch ? 'elevated' : 'outlined'"
+        :color="showDetailSearch ? 'primary' : 'default'"
+        @click="showDetailSearch = !showDetailSearch"
       >
-        <v-card-text>
-          <v-row dense>
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                label="イベント名*"
-                required
-              ></v-text-field>
+        詳細検索
+        <v-icon :icon="showDetailSearch ? 'mdi-chevron-up' : 'mdi-chevron-down'"></v-icon>
+      </v-btn>
+    </v-col>
+  </v-row>
+</div>
 
-            </v-col>
-            <v-autocomplete
-              v-model="selectedManagers"
-              label="管理者*"
-              :items="userList"
-              variant="underlined"
-              multiple
-              chips
-              closable-chips
-            ></v-autocomplete>
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                label="開催日*"
-                required
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-            >
-              <v-select
-                :items="['自由参加', '招待制']"
-                label="参加条件*"
-                required
-              ></v-select>
-            </v-col>
-
-            <v-col
-              cols="12"
-              sm="6"
-            >
-            <div class="mb-2">イベント概要</div>
-                <v-textarea
-                  :counter="10000"
-                  class="mb-2"
-                  rows="2"
-                  variant="outlined"
-                  persistent-counter
-                ></v-textarea>
-            </v-col>
-          </v-row>
-          
-          <small class="text-caption text-medium-emphasis">*indicates required field</small>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            text="Close"
-            variant="plain"
-            @click="dialog = false"
-          ></v-btn>
-
-          <v-btn
-            color="primary"
-            text="Save"
-            variant="tonal"
-            @click="dialog = false"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
+<!-- 詳細検索フォーム -->
+<v-expand-transition>
+  <v-card v-show="showDetailSearch" class="mb-4" elevation="2">
+    <v-card-title>詳細検索</v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="detailSearchForm.eventName"
+            label="イベント名"
+            variant="outlined"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-autocomplete
+            v-model="detailSearchForm.managers"
+            label="管理者"
+            :items="userList"
+            variant="outlined"
+            multiple
+            chips
+            clearable
+          ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-text-field
+            v-model="detailSearchForm.dateFrom"
+            label="開始日以降"
+            type="date"
+            variant="outlined"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-text-field
+            v-model="detailSearchForm.dateTo"
+            label="終了日以前"
+            type="date"
+            variant="outlined"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-select
+            v-model="detailSearchForm.dateStatus"
+            label="開催ステータス"
+            :items="[
+              { title: 'すべて', value: 'all' },
+              { title: '開催予定', value: 'upcoming' },
+              { title: '終了済み', value: 'ended' }
+            ]"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-select
+            v-model="detailSearchForm.participationType"
+            label="参加条件"
+            :items="[
+              { title: 'すべて', value: 'all' },
+              { title: '自由参加', value: '自由参加' },
+              { title: '承認制', value: '承認制' }
+            ]"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-select
+            v-model="detailSearchForm.myParticipation"
+            label="自身の参加状況"
+            :items="[
+              { title: 'すべて', value: 'all' },
+              { title: '参加中', value: 'participating' },
+              { title: '未参加', value: 'not_participating' }
+            ]"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-select
+            v-model="detailSearchForm.myRole"
+            label="自身の権限"
+            :items="[
+              { title: 'すべて', value: 'all' },
+              { title: '管理者', value: 'admin' },
+              { title: '参加者のみ', value: 'participant_only' }
+            ]"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+      </v-row>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn
+        variant="outlined"
+        @click="detailSearchForm = {
+          eventName: '',
+          managers: [],
+          dateFrom: '',
+          dateTo: '',
+          dateStatus: 'all',
+          participationType: 'all',
+          myParticipation: 'all',
+          myRole: 'all'
+        }"
+      >
+        クリア
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+</v-expand-transition>
     <div>
     <v-tabs v-model="currentTab">
       <v-tab value="all_event">すべてのイベント</v-tab>
@@ -219,7 +273,7 @@
     <v-data-table 
       :items="events" 
       :headers="headers"
-      :search="tabFilter"
+      :search="tableSearch"
       :custom-filter="customFilter">
       
       <template v-slot:item.title="{ item }">
@@ -245,7 +299,7 @@
       
       <template v-slot:item.date="{ item }">
         <span v-if="new Date(item.date) > new Date()">
-          {{item.date}} (予定)
+          {{item.date}}
         </span>
         <span v-else class="text-grey">
           {{item.date}} (終了)
@@ -271,7 +325,7 @@
 
   import { computed as vueComputed } from 'vue'
 
-const computed = vueComputed
+  const computed = vueComputed
 
   const dialog = shallowRef(false)
   const tab = ref(0)
@@ -331,21 +385,99 @@ const headers = [
   { title: '権限', value:'is_me_admin'}
 ]
 
-const tabFilter = computed(() => {
-  return currentTab.value
+// 検索関連の状態を追加
+const showDetailSearch = ref(false)
+const searchText = ref('')
+const detailSearchForm = ref({
+  eventName: '',
+  managers: [],
+  dateFrom: '',
+  dateTo: '',
+  dateStatus: 'all', // 'all', 'upcoming', 'ended'
+  participationType: 'all', // 'all', '自由参加', '承認制'
+  myParticipation: 'all', // 'all', 'participating', 'not_participating'
+  myRole: 'all' // 'all', 'admin', 'participant_only'
 })
 
+// customFilter関数を修正
 const customFilter = (value: any, search: string, item: any) => {
+  // タブフィルター
+  let tabResult = true
   if (search === 'all_event') {
-    return true // すべてのイベントを表示
+    tabResult = true
   } else if (search === 'commingsoon_event') {
-    return true //#要変更
-  }else if (search === 'attend_event') {
-    return true //#要変更
+    tabResult = new Date(item.raw?.date) > new Date()
+  } else if (search === 'attend_event') {
+    tabResult = item.raw?.is_me_attendee === true
   } else if (search === 'administrate_event') {
-    return true //#要変更
+    tabResult = item.raw?.is_me_admin === true
   }
-  return true
+
+  // 詳細検索が有効でない場合はタブフィルターのみ
+  if (!showDetailSearch.value) {
+    return tabResult
+  }
+
+  // 詳細検索フィルター
+  const form = detailSearchForm.value
+  
+  // イベント名
+  if (form.eventName && !item.raw?.title.toLowerCase().includes(form.eventName.toLowerCase())) {
+    return false
+  }
+  
+  // 管理者（実装はAPI仕様に依存）
+  if (form.managers.length > 0) {
+    // 管理者の判定ロジックが必要
+  }
+  
+  // 開催日範囲
+  const itemDate = new Date(item.raw?.date)
+  if (form.dateFrom && itemDate < new Date(form.dateFrom)) {
+    return false
+  }
+  if (form.dateTo && itemDate > new Date(form.dateTo)) {
+    return false
+  }
+  
+  // 開催日ステータス
+  if (form.dateStatus === 'upcoming' && itemDate <= new Date()) {
+    return false
+  }
+  if (form.dateStatus === 'ended' && itemDate > new Date()) {
+    return false
+  }
+  
+  // 参加条件
+  if (form.participationType !== 'all') {
+    const isOpen = form.participationType === '自由参加'
+    if (item.raw?.is_open !== isOpen) {
+      return false
+    }
+  }
+  
+  // 自身の参加状況
+  if (form.myParticipation === 'participating' && !item.raw?.is_me_attendee) {
+    return false
+  }
+  if (form.myParticipation === 'not_participating' && item.raw?.is_me_attendee) {
+    return false
+  }
+  
+  // 自身の管理者権限
+  if (form.myRole === 'admin' && !item.raw?.is_me_admin) {
+    return false
+  }
+  if (form.myRole === 'participant_only' && item.raw?.is_me_admin) {
+    return false
+  }
+  
+  return tabResult
 }
+
+// v-data-tableのsearchプロパティを修正
+const tableSearch = computed(() => {
+  return showDetailSearch.value ? 'detail_search' : searchText.value
+})
 </script>
   
