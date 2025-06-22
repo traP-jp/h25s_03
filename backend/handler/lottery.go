@@ -69,7 +69,16 @@ func (h *Handler) DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lo
 	return ctx.NoContent(http.StatusNoContent)
 }
 
+type RollLotteryJSONResponseBody struct {
+	Winner string `json:"winner"`
+}
+
 func (h *Handler) RollLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID, params api.RollLotteryParams) error {
-	// TODO: Implement RollLottery
-	return ctx.NoContent(http.StatusNotImplemented)
+	winner, err := h.LotteryService.RollLottery(ctx.Request().Context(), eventID, lotteryID, params.IfDuplicated)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("roll lottery (handler): %w", err))
+	}
+	return ctx.JSON(http.StatusOK, RollLotteryJSONResponseBody{
+		Winner: winner,
+	})
 }
