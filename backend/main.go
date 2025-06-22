@@ -21,11 +21,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	swagger, err := api.GetSwagger()
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
-	e.Use(OapiValidator.OapiRequestValidator(swagger))
+	// not working correctly on noeshowcase, to be fixed
+	// swagger, err := api.GetSwagger()
+	// if err != nil {
+	// 	e.Logger.Fatal(err)
+	// }
+	// e.Use(OapiValidator.OapiRequestValidator(swagger))
 
 	dbUser, exists := os.LookupEnv("NS_MARIADB_USER")
 	if !exists {
