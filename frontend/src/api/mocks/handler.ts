@@ -19,8 +19,8 @@ export const handlers = [
     return HttpResponse.json({
       lottery_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
       event_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      title: 'string',
-      is_delete: false,
+      title: '焼肉食べ放題',
+      is_deleted: false,
       created_at: '2025-06-21T06:06:28.642Z',
       updated_at: '2025-06-21T06:06:28.642Z',
       winners: ['miyamon', 'ogu_kazemiya', 'ten_ten'],
