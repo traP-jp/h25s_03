@@ -51,7 +51,6 @@
                       chips
                       closable-chips
                       required
-                      disabled
                     ></v-autocomplete>
                   </v-col>
 
