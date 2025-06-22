@@ -57,8 +57,19 @@ func (h *Handler) GetLotteries(ctx echo.Context, eventID openapi_types.UUID, par
 type GetLotteryJSONResponseBody api.Lottery
 
 func (h *Handler) GetLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error {
-	// TODO: Implement GetLottery
-	return ctx.NoContent(http.StatusNotImplemented)
+	lottery, err := h.LotteryService.GetLottery(ctx.Request().Context(), eventID, lotteryID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("get lottery (handler): %w", err))
+	}
+	return ctx.JSON(http.StatusOK, GetLotteryJSONResponseBody{
+		LotteryId: lottery.LotteryID,
+		EventId:   lottery.EventID,
+		Title:     lottery.Title,
+		IsDeleted: lottery.IsDeleted,
+		CreatedAt: lottery.CreatedAt,
+		UpdatedAt: lottery.UpdatedAt,
+		Winners:   lottery.Winners,
+	})
 }
 
 func (h *Handler) DeleteLottery(ctx echo.Context, eventID openapi_types.UUID, lotteryID openapi_types.UUID) error {
