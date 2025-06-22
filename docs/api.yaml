@@ -6,10 +6,29 @@ servers:
   - url: https://localhost:2048
     description: Local server
 tags:
+  - name: User
   - name: Event
   - name: Attendance
   - name: Lottery
 paths:
+  /users/me:
+    get:
+      tags:
+        - User
+      operationId: getMe
+      summary: 自分のtraQ IDを取得します
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+        '500':
+          description: Internal Server Error
   /events:
     post:
       tags:
