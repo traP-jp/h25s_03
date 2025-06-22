@@ -32,8 +32,8 @@ var (
 	)
 
 	adminRepositoryBind = wire.Bind(
-		new(repository.adminRepository),
-		new(*repository.adminRepositoryImpl),
+		new(repository.AdminRepository),
+		new(*repository.AdminRepositoryImpl),
 	)
 	attendeeRepositoryBind = wire.Bind(
 		new(repository.AttendeeRepository),

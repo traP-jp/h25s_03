@@ -17,27 +17,57 @@ import (
 // Injectors from wire.go:
 
 func InitializeServer(db *gorm.DB) *handler.Handler {
-	exampleRepositoryImpl := repository.NewExampleRepositoryImpl(db)
-	exampleServiceImpl := service.NewExampleServiceImpl(exampleRepositoryImpl)
 	middlewareServiceImpl := service.NewMiddlewareServiceImpl()
-	handlerHandler := handler.NewHandler(exampleServiceImpl, middlewareServiceImpl)
+	eventRepositoryImpl := repository.NewEventRepositoryImpl(db)
+	adminRepositoryImpl := repository.NewAdminRepositoryImpl(db)
+	attendeeRepositoryImpl := repository.NewAttendeeRepositoryImpl(db)
+	eventServiceImpl := service.NewEventServiceImpl(eventRepositoryImpl, adminRepositoryImpl, attendeeRepositoryImpl)
+	attendanceServiceImpl := service.NewAttendanceServiceImpl(attendeeRepositoryImpl)
+	lotteryRepositoryImpl := repository.NewLotteryRepositoryImpl(db)
+	winnerRepositoryImpl := repository.NewWinnerRepositoryImpl(db)
+	lotteryServiceImpl := service.NewLotteryServiceImpl(lotteryRepositoryImpl, winnerRepositoryImpl)
+	handlerHandler := handler.NewHandler(middlewareServiceImpl, eventServiceImpl, attendanceServiceImpl, lotteryServiceImpl)
 	return handlerHandler
 }
 
 // wire.go:
 
 var (
-	exampleServiceBind = wire.Bind(
-		new(service.ExampleService),
-		new(*service.ExampleServiceImpl),
+	eventServiceBind = wire.Bind(
+		new(service.EventService),
+		new(*service.EventServiceImpl),
+	)
+	attendanceServiceBind = wire.Bind(
+		new(service.AttendanceService),
+		new(*service.AttendanceServiceImpl),
+	)
+	lotteryServiceBind = wire.Bind(
+		new(service.LotteryService),
+		new(*service.LotteryServiceImpl),
 	)
 	middlewareServiceBind = wire.Bind(
 		new(service.MiddlewareService),
 		new(*service.MiddlewareServiceImpl),
 	)
 
-	exampleRepositoryBind = wire.Bind(
-		new(repository.ExampleRepository),
-		new(*repository.ExampleRepositoryImpl),
+	adminRepositoryBind = wire.Bind(
+		new(repository.AdminRepository),
+		new(*repository.AdminRepositoryImpl),
+	)
+	attendeeRepositoryBind = wire.Bind(
+		new(repository.AttendeeRepository),
+		new(*repository.AttendeeRepositoryImpl),
+	)
+	eventRepositoryBind = wire.Bind(
+		new(repository.EventRepository),
+		new(*repository.EventRepositoryImpl),
+	)
+	lotteryRepositoryBind = wire.Bind(
+		new(repository.LotteryRepository),
+		new(*repository.LotteryRepositoryImpl),
+	)
+	winnerRepositoryBind = wire.Bind(
+		new(repository.WinnerRepository),
+		new(*repository.WinnerRepositoryImpl),
 	)
 )
