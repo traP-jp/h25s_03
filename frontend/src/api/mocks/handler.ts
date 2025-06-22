@@ -12,7 +12,7 @@ export const handlers = [
         date: '2026-10-01',
         is_open: false,
         is_me_attendee: true,
-        admins: ['ten_ten']
+        admins: ['ten_ten'],
       },
       {
         title: 'Event 2',
@@ -20,8 +20,8 @@ export const handlers = [
         date: '2023-10-01',
         is_open: true,
         is_me_attendee: true,
-        admins: ['ten_ten']
-      }
+        admins: ['ten_ten'],
+      },
     ])
   }),
   // http.post('/events', () => {
