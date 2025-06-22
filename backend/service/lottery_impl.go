@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"math/rand/v2"
 	"time"
 
 	"github.com/eraxyso/go-template/repository"
@@ -10,14 +11,18 @@ import (
 )
 
 type LotteryServiceImpl struct {
-	lotteryRepository repository.LotteryRepository
+	lotteryRepository   repository.LotteryRepository
+	attendeesRepository repository.AttendeeRepository
+	winnerRepository    repository.WinnerRepository
 }
 
 var _ LotteryService = &LotteryServiceImpl{}
 
-func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository) *LotteryServiceImpl {
+func NewLotteryServiceImpl(lotteryRepository repository.LotteryRepository, attendeesRepository repository.AttendeeRepository, winnerRepository repository.WinnerRepository) *LotteryServiceImpl {
 	return &LotteryServiceImpl{
-		lotteryRepository: lotteryRepository,
+		lotteryRepository:   lotteryRepository,
+		attendeesRepository: attendeesRepository,
+		winnerRepository:    winnerRepository,
 	}
 }
 
@@ -72,4 +77,44 @@ func (ls *LotteryServiceImpl) DeleteLottery(ctx context.Context, eventID uuid.UU
 		return fmt.Errorf("delete lottery (service): %w", err)
 	}
 	return nil
+}
+
+func (ls *LotteryServiceImpl) RollLottery(ctx context.Context, eventID uuid.UUID, lotteryID uuid.UUID, ifDuplicated bool) (string, error) {
+	userIDs, err := ls.attendeesRepository.GetEventAttendees(ctx, eventID)
+	if err != nil {
+		return "", fmt.Errorf("get attendees (service): %w", err)
+	}
+
+	winners := []string{}
+	if ifDuplicated {
+		winners, err = ls.winnerRepository.GetEventWinners(ctx, eventID)
+		if err != nil {
+			return "", fmt.Errorf("lottery get eventwinners (service): %w", err)
+		}
+	} else {
+		winners, err = ls.winnerRepository.GetLotteryWinnners(ctx, lotteryID)
+		if err != nil {
+			return "", fmt.Errorf("lottery get lotterywinners (service): %w", err)
+		}
+	}
+
+	// pool = userIDs - winners
+	pool := []string{}
+	winnersMap := make(map[string]struct{})
+	for _, user := range winners {
+		winnersMap[user] = struct{}{}
+	}
+	for _, user := range userIDs {
+		if _, ok := winnersMap[user]; !ok {
+			pool = append(pool, user)
+		}
+	}
+	winner := pool[rand.IntN(len(pool))]
+
+	err = ls.winnerRepository.InsertWinner(ctx, repository.Winner{})
+	if err != nil {
+		return "", fmt.Errorf("insert winner (service): %w", err)
+	}
+
+	return winner, nil
 }

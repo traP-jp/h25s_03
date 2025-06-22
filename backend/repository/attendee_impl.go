@@ -59,3 +59,15 @@ func (ar *AttendeeRepositoryImpl) UpdateAttendees(ctx context.Context, eventID u
 	}
 	return nil
 }
+
+func (ar *AttendeeRepositoryImpl) GetEventAttendees(ctx context.Context, eventID uuid.UUID) ([]string, error) {
+	var traqIDs []string
+	err := ar.db.WithContext(ctx).
+		Model(&attendeeModel{}).
+		Where("event_id = ?", eventID).
+		Pluck("traq_id", &traqIDs).Error
+	if err != nil {
+		return nil, fmt.Errorf("get sttendees: %w", err)
+	}
+	return traqIDs, nil
+}

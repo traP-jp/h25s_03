@@ -105,6 +105,7 @@ func (lr *LotteryRepositoryImpl) GetLotteries(ctx context.Context, eventID uuid.
 	return lotteriesResult, nil
 }
 
+
 func (lr *LotteryRepositoryImpl) DeleteLottery(ctx context.Context, lotteryID uuid.UUID) error {
 	if err := lr.db.WithContext(ctx).Model(&lotteryModel{}).Where("lottery_id = ?", lotteryID).Update("is_deleted", true).Error; err != nil {
 		return fmt.Errorf("delete lottery (repository): %w", err)

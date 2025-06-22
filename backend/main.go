@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"net/url"
 	"os"
 
@@ -59,9 +60,14 @@ func main() {
 
 	mr := newMiddlewareRouter()
 
-	// TODO: Add admin routes
-	// mr.addRoute("POST", "/exmaples", server.MiddlewareService.MiddlewareServiceExample)
-	// mr.addGroup("POST", "/examples", server.MiddlewareService.MiddlewareServiceExample)
+	mr.addRoute(http.MethodPatch, "/events/:eventID", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodDelete, "/events/:eventID", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodPost, "/events/:eventID/lotteries", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodPost, "/events/:eventID/lottereis/:lotteryID", server.MiddlewareService.EventAdminAuthentication)
+	mr.addRoute(http.MethodDelete, "/events/:eventID/lotteries/:lotteryID", server.MiddlewareService.EventAdminAuthentication)
+
+	mr.addRoute(http.MethodPost, "/events/:eventID/attendance", server.MiddlewareService.EventRegistrationAuthentication)
+	mr.addRoute(http.MethodDelete, "/events/:eventID/attendance", server.MiddlewareService.EventRegistrationAuthentication)
 
 	e.Use(mr.registerMiddlewares)
 

@@ -59,3 +59,13 @@ func (ar *AdminRepositoryImpl) UpdateAdmins(ctx context.Context, eventID uuid.UU
 	}
 	return nil
 }
+
+func (ar *AdminRepositoryImpl) CheckAdmin(ctx context.Context, eventID uuid.UUID, userID string) (bool, error) {
+	var count int64
+	if err := ar.db.WithContext(ctx).Model(&adminModel{}).
+		Where("event_id = ? AND traq_id = ?", eventID.String(), userID).
+		Count(&count).Error; err != nil {
+		return false, fmt.Errorf("check admin (repository): %w", err)
+	}
+	return count > 0, nil
+}
