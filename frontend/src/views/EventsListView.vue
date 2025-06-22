@@ -328,7 +328,7 @@ const users = ref([])
 const newEvent = ref<components['schemas']['EventBase']>({
   title: '',
   description: '',
-  date: '',
+  date: new Date().toISOString().split('T')[0],
   is_open: true,
   is_me_attendee: true,
   admins: [],
@@ -350,7 +350,7 @@ const createEvent = async () => {
   newEvent.value = {
     title: '',
     description: '',
-    date: '',
+    date: new Date().toISOString().split('T')[0],
     is_open: true,
     is_me_attendee: true,
     admins: [my_id.value],
