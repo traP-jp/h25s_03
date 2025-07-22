@@ -42,7 +42,7 @@
                   </v-col>
 
                   <v-col cols="12">
-                    <v-autocomplete
+                    <v-combobox
                       v-model="newEvent.admins"
                       label="管理者*"
                       :items="userList"
@@ -51,7 +51,7 @@
                       chips
                       closable-chips
                       required
-                    ></v-autocomplete>
+                    ></v-combobox>
                   </v-col>
 
                   <v-col cols="12" md="6">
@@ -150,7 +150,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
-              <v-autocomplete
+              <v-combobox
                 v-model="detailSearchForm.managers"
                 label="管理者"
                 :items="userList"
@@ -158,7 +158,7 @@
                 multiple
                 chips
                 clearable
-              ></v-autocomplete>
+              ></v-combobox>
             </v-col>
             <v-col cols="12" md="4">
               <v-text-field
@@ -316,7 +316,7 @@ const computed = vueComputed
 const dialog = shallowRef(false)
 
 const selectedManagers = ref([])
-const userList = ['ogu_kazemiya', 'miyamon', 'ten_ten', 'cp20', 'Eraxyso', 'Naph1', 'hachimitsu']
+const userList = ref(['ogu_kazemiya', 'miyamon', 'ten_ten', 'cp20', 'Eraxyso', 'Naph1', 'hachimitsu'])
 
 const my_id = ref('')
 
@@ -377,9 +377,10 @@ const fetchUsers = async () => {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`)
   }
-
-  const data = await response.json()
-  users.value = data
+  else {
+    const data = await response.json()
+    userList.value = data.map((user: { name: string }) => user.name)
+  }
 }
 
 const addEvent = async () => {
@@ -406,6 +407,9 @@ onMounted(async () => {
 
   my_id.value = (await apiClient.GET('/users/me')).data?.name ?? ''
   newEvent.value.admins = [my_id.value]
+  if (!userList.value.includes(my_id.value)) {
+    userList.value.push(my_id.value)
+  }
 })
 
 const currentTab = ref('all_event')
@@ -423,7 +427,7 @@ const showDetailSearch = ref(false)
 const searchText = ref('')
 const detailSearchForm = ref({
   eventName: '',
-  managers: [],
+  managers: [] as string[],
   dateFrom: '',
   dateTo: '',
   dateStatus: 'all', // 'all', 'upcoming', 'ended'
